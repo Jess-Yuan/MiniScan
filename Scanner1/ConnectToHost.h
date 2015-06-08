@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #pragma comment(lib, "ws2_32.lib")
-#include <WinSock2.h>
+#include <WinSock.h>
 
 using namespace std;
 
