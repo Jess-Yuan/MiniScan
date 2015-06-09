@@ -7,7 +7,7 @@ using namespace std;
 SOCKET s; //Socket handle
 
 //CONNECTTOHOST ¨C Connects to a remote host
-bool ConnectToHost(int PortNo, const char* IPAddress)
+bool ConnectToHostTCP(int PortNo, const char* IPAddress)
 {
 	//Start up Winsock¡­
 	WSADATA wsadata;
