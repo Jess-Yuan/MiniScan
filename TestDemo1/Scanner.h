@@ -9,7 +9,7 @@ using namespace std;
 const char *ipAddr = "127.0.0.1";
 map<int, int> ports = { { 1, 1 }, { 2, 2 }, { 3, 3 }, { 445, 445 }, { 443, 443 }, { 5, 5 }, {10,10},
 { 11, 11 }, {12,12} };
-map<int, int>::iterator item = ports.begin();
+map<int, int>::const_iterator item = ports.cbegin();
 SOCKET s;
 HANDLE mutex;
 
@@ -93,11 +93,11 @@ DWORD WINAPI Proc2(LPVOID lpParam)
 {
 	while (true) {
 		WaitForSingleObject(mutex, INFINITE);
-		if (item != ports.end()) {
+		if (item != ports.cend()) {
 			if (ConnectToHost(item->second, "127.0.0.1")) {
 				cout << "Proc2  " << item->second << " is open!!!" << endl;
 				item++;
-				ReleaseMutex(mutex);
+				//ReleaseMutex(mutex);
 			}
 			else {
 				cout << "Proc2  " << item->second << " is close" << endl;

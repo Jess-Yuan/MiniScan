@@ -1,11 +1,12 @@
 #include "Scanner.h"
 #include <iostream>
 #include <ctime>
+#include <map>
 
 using namespace std;
 
 HANDLE hThread[2];
-
+map<string, int> map1;
 
 int main()
 {
@@ -23,4 +24,9 @@ int main()
 	for (int i = 0; i < 2; i++)
 		CloseHandle(hThread[i]);
 	cout << clock() - start << endl;
+
+	//map1["172.0.0.1"] = 12;
+	//map1["192.168.10.10"] = 20;
+	//for (auto item = map1.begin(); item != map1.end(); item++)
+	//	cout << item->first.c_str() << " " << item->second << endl;
 }
