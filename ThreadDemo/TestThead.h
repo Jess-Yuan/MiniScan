@@ -28,7 +28,7 @@ namespace ThreadDemo {
 			Control::CheckForIllegalCrossThreadCalls = false;
 		}
 
-	//public: delegate System::Void ThreadStart();
+	public: delegate void testDelegate();
 
 
 	protected:
@@ -45,7 +45,6 @@ namespace ThreadDemo {
 	private: System::Windows::Forms::Button^  button1;
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::TextBox^  textBox1;
-	private: System::Windows::Forms::Label^  label1;
 	protected:
 
 	private:
@@ -61,10 +60,10 @@ namespace ThreadDemo {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// button1
@@ -93,20 +92,11 @@ namespace ThreadDemo {
 			this->textBox1->Size = System::Drawing::Size(172, 21);
 			this->textBox1->TabIndex = 2;
 			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(207, 77);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(0, 12);
-			this->label1->TabIndex = 3;
-			// 
 			// TestThead
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(284, 262);
-			this->Controls->Add(this->label1);
 			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
@@ -125,7 +115,14 @@ namespace ThreadDemo {
 	}
 
 			 System::Void ThreadProcess(){
-				 label1->Text = "OK";
+				 TestThead^ o = gcnew TestThead;
+				 if (textBox1->InvokeRequired) {
+					 textBox1->Text = "Hello world!";
+					 textBox1->Invoke(gcnew ThreadStart(o, &TestThead::ThreadProcess));
+				 }
+				 else {
+					 textBox1->Text = "Thread Start!";
+				 }
 			 }
 	};
 }

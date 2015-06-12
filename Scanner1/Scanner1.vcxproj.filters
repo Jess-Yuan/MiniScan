@@ -32,6 +32,9 @@
     <ClInclude Include="ConnectToHost.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadProc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scanner.resx">

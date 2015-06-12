@@ -91,6 +91,7 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Convert.h" />
+    <ClInclude Include="ThreadProc.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scanner.resx">
