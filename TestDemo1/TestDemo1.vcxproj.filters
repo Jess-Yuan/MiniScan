@@ -15,14 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rawping_driver.cpp">
-      <Filter>资源文件</Filter>
+    <ClCompile Include="ip_checksum.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="rawping.cpp">
-      <Filter>资源文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ip_checksum.cpp">
-      <Filter>资源文件</Filter>
+    <ClCompile Include="rawping_driver.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

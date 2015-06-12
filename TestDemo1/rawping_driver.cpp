@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "rawping.h"
+#pragma comment(lib,"ws2_32.lib")
 
 using namespace std;
 
