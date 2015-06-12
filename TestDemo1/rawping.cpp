@@ -1,9 +1,11 @@
-#include <winsock2.h>
 #include <ws2tcpip.h>
+#include <winsock2.h>
+
 #include <iostream>
 
 #include "rawping.h"
 #include "ip_checksum.h"
+
 
 using namespace std;
 
@@ -26,7 +28,9 @@ int setup_for_ping(char* host, int ttl, SOCKET& sd, sockaddr_in& dest)
 	}
 
 	if (setsockopt(sd, IPPROTO_IP, IP_TTL, (const char*)&ttl,
-		sizeof(ttl)) == SOCKET_ERROR) {
+		sizeof(ttl)) == SOCKET_ERROR) 
+	//if (setsockopt(sd, SOL_SOCKET, SO_BROADCAST, (const char*)&ttl, sizeof(ttl)) == SOCKET_ERROR)
+	{
 		cerr << "TTL setsockopt failed: " << WSAGetLastError() << endl;
 		return -1;
 	}

@@ -27,32 +27,36 @@ int main(int argc, char* argv[])
 	IPHeader* recv_buf = 0;
 
 	// Did user pass enough parameters?
-	if (argc < 2) {
-		cerr << "usage: " << argv[0] << " <host> [data_size] [ttl]" <<
-			endl;
-		cerr << "\tdata_size can be up to " << MAX_PING_DATA_SIZE <<
-			" bytes.  Default is " << DEFAULT_PACKET_SIZE << "." <<
-			endl;
-		cerr << "\tttl should be 255 or lower.  Default is " <<
-			DEFAULT_TTL << "." << endl;
-		return 1;
-	}
+	//if (argc < 2) {
+	//	cerr << "usage: " << argv[0] << " <host> [data_size] [ttl]" <<
+	//		endl;
+	//	cerr << "\tdata_size can be up to " << MAX_PING_DATA_SIZE <<
+	//		" bytes.  Default is " << DEFAULT_PACKET_SIZE << "." <<
+	//		endl;
+	//	cerr << "\tttl should be 255 or lower.  Default is " <<
+	//		DEFAULT_TTL << "." << endl;
+	//	return 1;
+	//}
 
 	// Figure out how big to make the ping packet
 	int packet_size = DEFAULT_PACKET_SIZE;
 	int ttl = DEFAULT_TTL;
-	if (argc > 2) {
-		int temp = atoi(argv[2]);
-		if (temp != 0) {
-			packet_size = temp;
-		}
-		if (argc > 3) {
-			temp = atoi(argv[3]);
-			if ((temp >= 0) && (temp <= 255)) {
-				ttl = temp;
-			}
-		}
-	}
+	//if (argc > 2) {
+	//	int temp = atoi(argv[2]);
+	//	if (temp != 0) {
+	//		packet_size = temp;
+	//	}
+	//	if (argc > 3) {
+	//		temp = atoi(argv[3]);
+	//		if ((temp >= 0) && (temp <= 255)) {
+	//			ttl = temp;
+	//		}
+	//	}
+	//}
+
+	packet_size = atoi("123");
+	ttl = atoi("123");
+
 	packet_size = max(sizeof(ICMPHeader),
 		min(MAX_PING_DATA_SIZE, (unsigned int)packet_size));
 
@@ -66,7 +70,7 @@ int main(int argc, char* argv[])
 	// Set up for pinging
 	SOCKET sd;
 	sockaddr_in dest, source;
-	if (setup_for_ping(argv[1], ttl, sd, dest) < 0) {
+	if (setup_for_ping("192.168.199.115", ttl, sd, dest) < 0) {
 		goto cleanup;
 	}
 	if (allocate_buffers(send_buf, recv_buf, packet_size) < 0) {
