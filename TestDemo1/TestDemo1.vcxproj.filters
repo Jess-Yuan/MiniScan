@@ -15,13 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Scanner.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="rawping_driver.cpp">
       <Filter>资源文件</Filter>
     </ClCompile>
+    <ClCompile Include="rawping.cpp">
+      <Filter>资源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ip_checksum.cpp">
+      <Filter>资源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rawping.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ip_checksum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,6 +10,15 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ip_checksum.cpp" />
+    <ClCompile Include="rawping.cpp" />
+    <ClCompile Include="rawping_driver.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ip_checksum.h" />
+    <ClInclude Include="rawping.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{830E6635-5764-4475-BE2B-6F67D881EAC2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -77,12 +86,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Scanner.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
