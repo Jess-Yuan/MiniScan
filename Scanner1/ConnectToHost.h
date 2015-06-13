@@ -28,7 +28,7 @@ bool ConnectToHostTCP(int PortNo, const char* IPAddress)
 
 	target.sin_family = AF_INET; // address family Internet
 	target.sin_port = htons(PortNo); //Port to connect on
-	target.sin_addr.S_un.S_addr = inet_addr("127.0.0.1"); //Target IP
+	target.sin_addr.S_un.S_addr = inet_addr(IPAddress); //Target IP
 
 	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Create socket
 	if (s == INVALID_SOCKET)
@@ -68,7 +68,7 @@ bool ConnectToHostUDP(int PortNo, const char* IPAddress)
 
 	target.sin_family = AF_INET; // address family Internet
 	target.sin_port = htons(PortNo); //Port to connect on
-	target.sin_addr.S_un.S_addr = inet_addr("127.0.0.1"); //Target IP
+	target.sin_addr.S_un.S_addr = inet_addr(IPAddress); //Target IP
 
 	s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); //Create socket
 	if (s == INVALID_SOCKET)

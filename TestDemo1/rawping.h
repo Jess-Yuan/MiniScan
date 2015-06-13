@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
 
+
 // ICMP packet types
 #define ICMP_ECHO_REPLY 0
 #define ICMP_DEST_UNREACH 3
@@ -54,3 +55,4 @@ extern int recv_ping(SOCKET sd, sockaddr_in& source, IPHeader* recv_buf,
 extern int decode_reply(IPHeader* reply, int bytes, sockaddr_in* from);
 extern void init_ping_packet(ICMPHeader* icmp_hdr, int packet_size,
 	int seq_no);
+

@@ -14,11 +14,12 @@ using namespace std;
 int allocate_buffers(ICMPHeader*& send_buf, IPHeader*& recv_buf,
 	int packet_size);
 
-
 ///////////////////////////////////////////////////////////////////////
 // Program entry point
 
-int main(int argc, char* argv[])
+
+
+int main()
 {
 	// Init some variables at top, so they aren't skipped by the
 	// cleanup routines.
@@ -54,8 +55,8 @@ int main(int argc, char* argv[])
 	//	}
 	//}
 
-	packet_size = atoi("123");
-	ttl = atoi("123");
+	packet_size = atoi("55");
+	ttl = atoi("21");
 
 	packet_size = max(sizeof(ICMPHeader),
 		min(MAX_PING_DATA_SIZE, (unsigned int)packet_size));
@@ -70,7 +71,7 @@ int main(int argc, char* argv[])
 	// Set up for pinging
 	SOCKET sd;
 	sockaddr_in dest, source;
-	if (setup_for_ping("192.168.199.115", ttl, sd, dest) < 0) {
+	if (setup_for_ping("192.168.199.1", ttl, sd, dest) < 0) {
 		goto cleanup;
 	}
 	if (allocate_buffers(send_buf, recv_buf, packet_size) < 0) {
@@ -99,10 +100,15 @@ int main(int argc, char* argv[])
 					break;
 				}
 			}
-			if (decode_reply(recv_buf, packet_size, &source) != -2) {
+			if (decode_reply(recv_buf, packet_size, &source) == 0) {
 				// Success or fatal error (as opposed to a minor error) 
 				// so take off.
+				cout << "YES";
 				break;
+			}
+			else
+			{
+				cout << "NO";
 			}
 		}
 	}

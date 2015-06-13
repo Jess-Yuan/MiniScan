@@ -15,12 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TestThead.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="icmp_ping.cpp">
+      <Filter>资源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestThead.h">
+    <ClInclude Include="icmp_ping.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ping.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

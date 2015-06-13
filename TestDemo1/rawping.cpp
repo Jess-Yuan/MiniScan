@@ -110,16 +110,16 @@ int send_ping(SOCKET sd, const sockaddr_in& dest, ICMPHeader* send_buf,
 	int packet_size)
 {
 	// Send the ping packet in send_buf as-is
-	cout << "Sending " << packet_size << " bytes to " <<
-		inet_ntoa(dest.sin_addr) << "..." << flush;
+//	cout << "Sending " << packet_size << " bytes to " <<
+//		inet_ntoa(dest.sin_addr) << "..." << flush;
 	int bwrote = sendto(sd, (char*)send_buf, packet_size, 0,
 		(sockaddr*)&dest, sizeof(dest));
 	if (bwrote == SOCKET_ERROR) {
-		cerr << "send failed: " << WSAGetLastError() << endl;
+//		cerr << "send failed: " << WSAGetLastError() << endl;
 		return -1;
 	}
 	else if (bwrote < packet_size) {
-		cout << "sent " << bwrote << " bytes..." << flush;
+//		cout << "sent " << bwrote << " bytes..." << flush;
 	}
 
 	return 0;
@@ -145,12 +145,12 @@ int recv_ping(SOCKET sd, sockaddr_in& source, IPHeader* recv_buf,
 		packet_size + sizeof(IPHeader), 0,
 		(sockaddr*)&source, &fromlen);
 	if (bread == SOCKET_ERROR) {
-		cerr << "read failed: ";
+//		cerr << "read failed: ";
 		if (WSAGetLastError() == WSAEMSGSIZE) {
-			cerr << "buffer too small" << endl;
+//			cerr << "buffer too small" << endl;
 		}
 		else {
-			cerr << "error #" << WSAGetLastError() << endl;
+//			cerr << "error #" << WSAGetLastError() << endl;
 		}
 		return -1;
 	}
@@ -169,20 +169,20 @@ int decode_reply(IPHeader* reply, int bytes, sockaddr_in* from)
 	unsigned short header_len = reply->h_len * 4;
 	ICMPHeader* icmphdr = (ICMPHeader*)((char*)reply + header_len);
 
-	// Make sure the reply is sane
+	// Make sure the reply is saned
 	if (bytes < header_len + ICMP_MIN) {
-		cerr << "too few bytes from " << inet_ntoa(from->sin_addr) <<
-			endl;
+//		cerr << "too few bytes from " << inet_ntoa(from->sin_addr) <<
+//		endl;
 		return -1;
 	}
 	else if (icmphdr->type != ICMP_ECHO_REPLY) {
 		if (icmphdr->type != ICMP_TTL_EXPIRE) {
 			if (icmphdr->type == ICMP_DEST_UNREACH) {
-				cerr << "Destination unreachable" << endl;
+//				cerr << "Destination unreachable" << endl;
 			}
 			else {
-				cerr << "Unknown ICMP packet type " << int(icmphdr->type) <<
-					" received" << endl;
+//				cerr << "Unknown ICMP packet type " << int(icmphdr->type) <<
+//					" received" << endl;
 			}
 			return -1;
 		}
@@ -208,16 +208,16 @@ int decode_reply(IPHeader* reply, int bytes, sockaddr_in* from)
 	}
 
 	// Okay, we ran the gamut, so the packet must be legal -- dump it
-	cout << endl << bytes << " bytes from " <<
-		inet_ntoa(from->sin_addr) << ", icmp_seq " <<
-		icmphdr->seq << ", ";
+//	cout << endl << bytes << " bytes from " <<
+//		inet_ntoa(from->sin_addr) << ", icmp_seq " <<
+//		icmphdr->seq << ", ";
 	if (icmphdr->type == ICMP_TTL_EXPIRE) {
-		cout << "TTL expired." << endl;
+//		cout << "TTL expired." << endl;
 	}
 	else {
-		cout << nHops << " hop" << (nHops == 1 ? "" : "s");
-		cout << ", time: " << (GetTickCount() - icmphdr->timestamp) <<
-			" ms." << endl;
+//		cout << nHops << " hop" << (nHops == 1 ? "" : "s");
+//		cout << ", time: " << (GetTickCount() - icmphdr->timestamp) <<
+//			" ms." << endl;
 	}
 
 	return 0;

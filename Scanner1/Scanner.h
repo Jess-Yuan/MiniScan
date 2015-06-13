@@ -31,14 +31,6 @@ namespace Scanner1 {
 	multimap<string, int> OpenPortMap;
 	//存储IP地址
 	map<string, string> IPAddrMap;
-
-	// 处理扫描的变量
-	map<int, int>::iterator item_tcp;
-	map<int, int>::iterator item_udp = UDPPortMap.begin();
-	DWORD WINAPI ProcConnect1(LPVOID lpParam);
-	DWORD WINAPI ProcConnect2(LPVOID lpParam);
-	HANDLE hThread[2];
-	HANDLE mutex;
 	//
 
 	public ref class Scanner : public System::Windows::Forms::Form
@@ -54,21 +46,8 @@ namespace Scanner1 {
 			//初始化Worker
 			InitializeBackgoundWorker();
 
-			//Control::CheckForIllegalCrossThreadCalls = false;
+			InitializeParameter();
 
-			//初始值TCP端口的容器
-			for each (String^ itemValue in TCPPortListBox->Items)
-			{
-				int port = int::Parse(itemValue);
-				TCPPortMap[port] = port;
-			}
-
-			//初始值UDP端口的容器
-			for each (String^ itemValue in UDPPortListBox->Items)
-			{
-				int port = int::Parse(itemValue);
-				UDPPortMap[port] = port;
-			}
 		}
 
 	protected:
@@ -278,14 +257,14 @@ namespace Scanner1 {
 			// 
 			this->IPAddressListBox->FormattingEnabled = true;
 			this->IPAddressListBox->ItemHeight = 12;
-			this->IPAddressListBox->Location = System::Drawing::Point(294, 20);
+			this->IPAddressListBox->Location = System::Drawing::Point(271, 20);
 			this->IPAddressListBox->Name = L"IPAddressListBox";
-			this->IPAddressListBox->Size = System::Drawing::Size(126, 124);
+			this->IPAddressListBox->Size = System::Drawing::Size(173, 124);
 			this->IPAddressListBox->TabIndex = 8;
 			// 
 			// RemoveIPAddress
 			// 
-			this->RemoveIPAddress->Location = System::Drawing::Point(230, 69);
+			this->RemoveIPAddress->Location = System::Drawing::Point(214, 69);
 			this->RemoveIPAddress->Name = L"RemoveIPAddress";
 			this->RemoveIPAddress->Size = System::Drawing::Size(40, 30);
 			this->RemoveIPAddress->TabIndex = 7;
@@ -295,7 +274,7 @@ namespace Scanner1 {
 			// 
 			// AddIPAddress
 			// 
-			this->AddIPAddress->Location = System::Drawing::Point(230, 26);
+			this->AddIPAddress->Location = System::Drawing::Point(214, 26);
 			this->AddIPAddress->Name = L"AddIPAddress";
 			this->AddIPAddress->Size = System::Drawing::Size(40, 30);
 			this->AddIPAddress->TabIndex = 6;
@@ -382,14 +361,14 @@ namespace Scanner1 {
 			// 
 			// UDPEndPortTextBox
 			// 
-			this->UDPEndPortTextBox->Location = System::Drawing::Point(82, 286);
+			this->UDPEndPortTextBox->Location = System::Drawing::Point(85, 286);
 			this->UDPEndPortTextBox->Name = L"UDPEndPortTextBox";
 			this->UDPEndPortTextBox->Size = System::Drawing::Size(59, 21);
 			this->UDPEndPortTextBox->TabIndex = 20;
 			// 
 			// UDPStartPortTextBox
 			// 
-			this->UDPStartPortTextBox->Location = System::Drawing::Point(81, 253);
+			this->UDPStartPortTextBox->Location = System::Drawing::Point(84, 253);
 			this->UDPStartPortTextBox->Name = L"UDPStartPortTextBox";
 			this->UDPStartPortTextBox->Size = System::Drawing::Size(60, 21);
 			this->UDPStartPortTextBox->TabIndex = 19;
@@ -480,16 +459,16 @@ namespace Scanner1 {
 			// 
 			// TCPEndPortTextBox
 			// 
-			this->TCPEndPortTextBox->Location = System::Drawing::Point(79, 160);
+			this->TCPEndPortTextBox->Location = System::Drawing::Point(85, 160);
 			this->TCPEndPortTextBox->Name = L"TCPEndPortTextBox";
-			this->TCPEndPortTextBox->Size = System::Drawing::Size(62, 21);
+			this->TCPEndPortTextBox->Size = System::Drawing::Size(59, 21);
 			this->TCPEndPortTextBox->TabIndex = 7;
 			// 
 			// TCPStartPortTextBox
 			// 
-			this->TCPStartPortTextBox->Location = System::Drawing::Point(81, 128);
+			this->TCPStartPortTextBox->Location = System::Drawing::Point(85, 128);
 			this->TCPStartPortTextBox->Name = L"TCPStartPortTextBox";
-			this->TCPStartPortTextBox->Size = System::Drawing::Size(60, 21);
+			this->TCPStartPortTextBox->Size = System::Drawing::Size(59, 21);
 			this->TCPStartPortTextBox->TabIndex = 6;
 			// 
 			// ClearTCPPortButton
@@ -561,6 +540,8 @@ namespace Scanner1 {
 			this->ClientSize = System::Drawing::Size(595, 411);
 			this->Controls->Add(this->tabControl1);
 			this->Name = L"Scanner";
+			this->ShowIcon = false;
+			this->Text = L"MiniScan";
 			this->Load += gcnew System::EventHandler(this, &Scanner::Scanner_Load);
 			this->tabControl1->ResumeLayout(false);
 			this->Scan->ResumeLayout(false);
@@ -581,7 +562,6 @@ namespace Scanner1 {
 	private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		// 清空IP和端口对应的映射变量
 		OpenPortMap.clear();
-
 		this->Result1->Text = String::Empty;
 		this->Result1->Text = "扫描中,请稍候...\n";
 		this->StartButton->Enabled = false;
@@ -640,7 +620,6 @@ private: System::Void RemoveTCPPort_Click(System::Object^  sender, System::Event
 	int index = str.find("-");
 	if (index <= 0) {
 		int port = int::Parse(tmp);
-		//TCPPortVec[port] = 0;
 		TCPPortMap.erase(port);
 		this->TCPPortListBox->Items->Remove(tmp);
 	}
@@ -651,7 +630,6 @@ private: System::Void RemoveTCPPort_Click(System::Object^  sender, System::Event
 		int eport = atoi(str_eport.c_str());
 		this->TCPPortListBox->Items->Remove(tmp);
 		while (sport <= eport){
-			//TCPPortVec[sport] = 0;
 			TCPPortMap.erase(sport);
 			++sport;
 		}
@@ -676,7 +654,6 @@ private: System::Void AddUDPPort_Click(System::Object^  sender, System::EventArg
 		return;
 	if (eport <= sport && (UDPPortMap[sport] != sport)) {
 		UDPPortMap[sport] = sport;
-		//TCPPortVec[sport] = sport;
 		this->UDPPortListBox->Items->Add(tmp1);
 	}
 
@@ -684,7 +661,6 @@ private: System::Void AddUDPPort_Click(System::Object^  sender, System::EventArg
 	if (sport < eport) {
 		int tmp_port = sport;
 		while (tmp_port <= eport) {
-			//TCPPortVec[tmp_port] = tmp_port;
 			UDPPortMap[tmp_port] = tmp_port;
 			++tmp_port;
 		}
@@ -742,68 +718,128 @@ private: System::Void AddIPAddress_Click(System::Object^  sender, System::EventA
 	}
 	else
 		return;
-	if (this->StartIPAddressTextBox->Text->Replace(" ","")->Length >= 7 && this->EndIPAddressTextBox->Text->Replace(" ","")->Length >=7) {
-		MarshalString(this->StartIPAddressTextBox->Text->Replace(" ",""), start_ipaddr);
-		MarshalString(this->EndIPAddressTextBox->Text->Replace(" ", ""), end_ipaddr);
-		this->IPAddressListBox->Items->Add(this->StartIPAddressTextBox->Text->Replace(" ", ""));
-		this->IPAddressListBox->Items->Add(this->EndIPAddressTextBox->Text->Replace(" ", ""));
-	}
+	//if (this->StartIPAddressTextBox->Text->Replace(" ","")->Length >= 7 && this->EndIPAddressTextBox->Text->Replace(" ","")->Length >=7) {
+	//	MarshalString(this->StartIPAddressTextBox->Text->Replace(" ",""), start_ipaddr);
+	//	MarshalString(this->EndIPAddressTextBox->Text->Replace(" ", ""), end_ipaddr);
+	//	this->IPAddressListBox->Items->Add(this->StartIPAddressTextBox->Text->Replace(" ", ""));
+	//	this->IPAddressListBox->Items->Add(this->EndIPAddressTextBox->Text->Replace(" ", ""));
+	//}
 	
 }
 		 
+		 //删除IP地址
+private: System::Void RemoveIPAddress_Click(System::Object^  sender, System::EventArgs^  e) {
+
+	if (!this->IPAddressListBox->SelectedItem)
+		return;
+	String^ tmp_addr = this->IPAddressListBox->SelectedItem->ToString();
+	string ipAddr;
+	this->IPAddressListBox->Items->Remove(tmp_addr);
+	MarshalString(tmp_addr, ipAddr);
+	IPAddrMap.erase(ipAddr);
+
+}
+
+		 
 		 //BackgroundWoker DoWork
 		System::Void DoWork(Object^ sender, DoWorkEventArgs^ e) {
-			item_tcp = TCPPortMap.begin();
-			item_udp = UDPPortMap.begin();
 
-			if (TCPScanCheckBox->Checked){
-				for (auto item = TCPPortMap.begin(); item != TCPPortMap.end(); ++item) {
-					if (!backgroundWorker->CancellationPending) {
-						if (ConnectToHostTCP(item->second, "127.0.0.1"))
-							OpenPortMap.insert({ "127.0.0.1", item->second });
-						CloseConnection();
-						e->Cancel = true;
-					}
-					else
-						return;
-				}
-			}
-
-			if (UDPScanCheckBox->Checked) {
-				for (auto item = UDPPortMap.begin(); item != UDPPortMap.end(); ++item) {
-					if (!backgroundWorker->CancellationPending) {
-						if (ConnectToHostUDP(item->second, "127.0.0.1"))
-							OpenPortMap.insert({ "127.0.0.1", item->second });
-						CloseConnection();
-						e->Cancel = true;
-					}
-					else
-						return;
-				}
-			}
+			ScanTCPorUDP(sender, e);
 			
 		}
 
 		//BackgroundWoker Completed
 		 System::Void OnRunWorkerCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e) {
-			 for (auto item = OpenPortMap.begin(); item != OpenPortMap.end(); ++item) {
-				 this->Result1->Text += gcnew String(item->first.c_str()) + " " + item->second + "\n";
+			 
+			 //格式输出
+			 for (auto item1 = IPAddrMap.begin(); item1 != IPAddrMap.end(); ++item1){
+				 this->Result1->Text += "--------------------------\n";
+				 this->Result1->Text += gcnew String(item1->first.c_str()) + " 开放端口有：\n";
+				 multimap<string, int>::const_iterator item2 = OpenPortMap.cbegin();
+				 while (item2 != OpenPortMap.cend()) {
+					 if (item2->first == item1->first)
+						 this->Result1->Text += "\t" + item2->second + "\n";
+					 ++item2;
+				 }
 			 }
-			 this->Result1->Text += "扫描完成\n";
+
+			 if (e->Cancelled)
+				 this->Result1->Text += "暂停扫描\n";
+			 else 
+				this->Result1->Text += "扫描完成\n";
 			 this->StartButton->Enabled = true;
 			 this->StopButton->Enabled = false;
 		 }
 
-		 // 初始化BackgroundWorker函数
+		 
 private:
+	// 初始化BackgroundWorker函数
 	System::Void InitializeBackgoundWorker() {
 		backgroundWorker = gcnew System::ComponentModel::BackgroundWorker;
+		backgroundWorker->WorkerSupportsCancellation = true;
 		backgroundWorker->DoWork += gcnew DoWorkEventHandler(this, &Scanner::DoWork);
 		backgroundWorker->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::OnRunWorkerCompleted);
 	}
+	
+	//初始化某些变量，比如端口容器
+	System::Void InitializeParameter() {
 
-private: System::Void RemoveIPAddress_Click(System::Object^  sender, System::EventArgs^  e) {
-}
+		//初始值TCP端口的容器
+		for each (String^ itemValue in TCPPortListBox->Items)
+		{
+			int port = int::Parse(itemValue);
+			TCPPortMap[port] = port;
+		}
+
+		//初始值UDP端口的容器
+		for each (String^ itemValue in UDPPortListBox->Items)
+		{
+			int port = int::Parse(itemValue);
+			UDPPortMap[port] = port;
+		}
+
+
+
+	}
+
+	//功能函数部分
+private:
+	System::Void ScanTCPorUDP(Object^ sender, DoWorkEventArgs^ e){
+		//每个IP地址扫描一次
+		for (auto item_addr = IPAddrMap.begin(); item_addr != IPAddrMap.end(); ++item_addr){
+			//检查是否TCP扫描
+			if (TCPScanCheckBox->Checked){
+				for (auto item = TCPPortMap.begin(); item != TCPPortMap.end(); ++item) {
+					if (!backgroundWorker->CancellationPending) {
+						if (ConnectToHostTCP(item->second, item_addr->second.c_str()))
+							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
+						CloseConnection();
+
+					}
+					else {
+						e->Cancel = true;
+						return;
+					}
+				}
+			}
+			//检查是否UDP扫描
+			if (UDPScanCheckBox->Checked) {
+				for (auto item = UDPPortMap.begin(); item != UDPPortMap.end(); ++item) {
+					if (!backgroundWorker->CancellationPending) {
+						if (ConnectToHostUDP(item->second, item_addr->second.c_str()))
+							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
+						CloseConnection();
+
+					}
+					else {
+						e->Cancel = true;
+						return;
+					}
+				}
+			}
+		}
+	}
+
 
 };
 }

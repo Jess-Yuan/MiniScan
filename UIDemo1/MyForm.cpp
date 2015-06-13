@@ -1,15 +1,13 @@
-#include "TestThead.h"
+#include "MyForm.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
 
-int main(array<String^>^ args)
+int main(array<String^>^  args)
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	ThreadDemo::TestThead form;
+	UIDemo1::MyForm form;
 	Application::Run(%form);
-
 }
-
