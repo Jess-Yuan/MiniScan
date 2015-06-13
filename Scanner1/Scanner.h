@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Convert.h"
-#include <string>
+#include "Auxiliary.h"
 #include "ConnectToHost.h"
+#include <string>
 #include <map>
 #using <System.Drawing.dll>
 #using <System.dll>
@@ -561,12 +562,14 @@ namespace Scanner1 {
 //开始扫描处理函数
 	private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		// 清空IP和端口对应的映射变量
-		OpenPortMap.clear();
+		//OpenPortMap.clear();
 		this->Result1->Text = String::Empty;
-		this->Result1->Text = "扫描中,请稍候...\n";
-		this->StartButton->Enabled = false;
-		this->StopButton->Enabled = true;
-		backgroundWorker->RunWorkerAsync(1);
+		//this->Result1->Text = "扫描中,请稍候...\n";
+		//this->StartButton->Enabled = false;
+		//this->StopButton->Enabled = true;
+		//backgroundWorker->RunWorkerAsync(1);
+		for (auto item = IPAddrMap.begin(); item != IPAddrMap.end(); ++item)
+			this->Result1->Text += gcnew String(item->second.c_str()) + "\n";
 
 	}
 
@@ -718,12 +721,12 @@ private: System::Void AddIPAddress_Click(System::Object^  sender, System::EventA
 	}
 	else
 		return;
-	//if (this->StartIPAddressTextBox->Text->Replace(" ","")->Length >= 7 && this->EndIPAddressTextBox->Text->Replace(" ","")->Length >=7) {
-	//	MarshalString(this->StartIPAddressTextBox->Text->Replace(" ",""), start_ipaddr);
-	//	MarshalString(this->EndIPAddressTextBox->Text->Replace(" ", ""), end_ipaddr);
-	//	this->IPAddressListBox->Items->Add(this->StartIPAddressTextBox->Text->Replace(" ", ""));
-	//	this->IPAddressListBox->Items->Add(this->EndIPAddressTextBox->Text->Replace(" ", ""));
-	//}
+	if (this->StartIPAddressTextBox->Text->Length >= 7 && this->EndIPAddressTextBox->Text->Length >=7) {
+		MarshalString(this->StartIPAddressTextBox->Text, start_ipaddr);
+		MarshalString(this->EndIPAddressTextBox->Text, end_ipaddr);
+		GenerateAddressRange(IPAddrMap, start_ipaddr, end_ipaddr);
+		this->IPAddressListBox->Items->Add(this->StartIPAddressTextBox->Text + "-" + this->EndIPAddressTextBox->Text);
+	}
 	
 }
 		 
@@ -738,6 +741,11 @@ private: System::Void RemoveIPAddress_Click(System::Object^  sender, System::Eve
 	MarshalString(tmp_addr, ipAddr);
 	IPAddrMap.erase(ipAddr);
 
+	if (ipAddr.find("-") >0) {
+		string start_ipaddr = ipAddr.substr(0, ipAddr.find("-"));
+		string end_ipaddr = ipAddr.substr(ipAddr.find("-") + 1, ipAddr.length());
+		RemoveAddressRange(IPAddrMap, start_ipaddr, end_ipaddr);
+	}
 }
 
 		 
