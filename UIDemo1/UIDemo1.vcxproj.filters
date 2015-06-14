@@ -15,18 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="icmp_ping.cpp">
-      <Filter>资源文件</Filter>
+    <ClCompile Include="MyForm.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="icmp_ping.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ping.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="add.h">
+    <ClInclude Include="MyForm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

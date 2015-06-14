@@ -1,15 +1,10 @@
 #include "icmp_ping.h"
-
+#include "../Scanner.h"
 #pragma pack(4)
 
 #define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-using namespace std;
-
-#pragma comment(lib, "ws2_32.lib")
 
 #define ICMP_ECHO 8
 #define ICMP_ECHOREPLY 0
@@ -86,10 +81,11 @@ void Usage(char *progname){
 
 
 //int ping(int argc, char **argv){
-int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
+bool ICMPping(const char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 
 	if (host == NULL){
-		return NULL_POINTER;
+		//return NULL_POINTER;
+		return false;
 	}
 
 	WSADATA wsaData;
@@ -106,9 +102,10 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 	USHORT seq_no = 0;
 
 	if (WSAStartup(MAKEWORD(2, 1), &wsaData) != 0){
-		fprintf(stderr, "WSAStartup failed: %d\n", GetLastError());
+//		fprintf(stderr, "WSAStartup failed: %d\n", GetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return WSASTARTUP_ERR;
+		//return WSASTARTUP_ERR;
+		return false;
 	}
 
 #if 0
@@ -128,14 +125,16 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 	if (sockRaw == INVALID_SOCKET) {
 		//		fprintf(stderr, "WSASocket() failed: %d\n", WSAGetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return INVALID_SOCK;
+		//return INVALID_SOCK;
+		return false;
 	}
 	bread = setsockopt(sockRaw, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout,
 		sizeof(timeout));
 	if (bread == SOCKET_ERROR) {
 		//		fprintf(stderr, "failed to set recv timeout: %d\n", WSAGetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return SOCK_ERR;
+		//return SOCK_ERR;
+		return false;
 	}
 	timeout = 1000;
 	bread = setsockopt(sockRaw, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout,
@@ -143,7 +142,8 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 	if (bread == SOCKET_ERROR) {
 		//		fprintf(stderr, "failed to set send timeout: %d\n", WSAGetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return SOCK_ERR;
+		//return SOCK_ERR;
+		return false;
 	}
 	memset(&dest, 0, sizeof(dest));
 
@@ -155,7 +155,8 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 	if ((!hp) && (addr == INADDR_NONE)) {
 		//		fprintf(stderr, "Unable to resolve %s\n", host);
 		//ExitProcess(STATUS_FAILED);
-		return UN_RESOLVE_HOST;
+		//return UN_RESOLVE_HOST;
+		return false;
 	}
 
 	if (hp != NULL)
@@ -178,7 +179,8 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 	if (!icmp_data) {
 		//		fprintf(stderr, "HeapAlloc failed %d\n", GetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return HEAP_ALLOC_ERR;
+		//return HEAP_ALLOC_ERR;
+		return false;
 	}
 
 	memset(icmp_data, 0, MAX_PACKET);
@@ -209,7 +211,8 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 		}
 		//			fprintf(stderr, "sendto failed: %d\n", WSAGetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return SEND_FAILED;
+		//return SEND_FAILED;
+		return false;
 	}
 	if (bwrote < datasize) {
 		//			fprintf(stdout, "Wrote %d bytes\n", bwrote);
@@ -225,14 +228,15 @@ int ping(char *host, int pingcount/* = 4*/, int datasize/* = DEF_PACKET_SIZE*/){
 		}
 		//			fprintf(stderr, "recvfrom failed: %d\n", WSAGetLastError());
 		//ExitProcess(STATUS_FAILED);
-		return TIME_OUT;
+		//return TIME_OUT;
+		return false;
 	}
 	if ((ret = decode_resp(recvbuf, bread, &from)) >= 0){
 		//ping_ok++;
-		return 0;
+		return true;
 	}
 	else
-		return -1;
+		return false;
 	//		total++;
 
 	//		Sleep(1000);
