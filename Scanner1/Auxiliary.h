@@ -214,3 +214,28 @@ void GenerateAddressRangeFromNetwork(map<string, string> &mapAddr, string net_ad
 	}
 
 }
+
+string GetServerNameByPort(int port) {
+	string name = "";
+	switch (port) {
+	case 7:name = "Echo"; break;
+	case 20:
+	case 21: name = "FTP"; break;
+	case 22: name = "SSH"; break;
+	case 23: name = "Telnet"; break;
+	case 25: name = "SMTP"; break;
+	case 80: name = "HTTP"; break;
+	case 110: name = "POP3"; break;
+	case 115: name = "SFTP"; break;
+	case 123: name = "NTP"; break;
+	case 137:
+	case 138: name = "NetBios"; break;
+	case 143: name = "IMAP"; break;
+	case 161: name = "SNMP"; break;
+	case 443: name = "HTTPS"; break;
+	case 546:
+	case 547: name = "DHCP"; break;
+	case 3389:name = "Super Terminal"; break;
+	}
+	return name;
+}

@@ -465,7 +465,7 @@ namespace Scanner1 {
 			// 
 			this->UDPPortListBox->FormattingEnabled = true;
 			this->UDPPortListBox->ItemHeight = 12;
-			this->UDPPortListBox->Items->AddRange(gcnew cli::array< System::Object^  >(3) { L"25", L"53", L"161" });
+			this->UDPPortListBox->Items->AddRange(gcnew cli::array< System::Object^  >(5) { L"25", L"53", L"137", L"138", L"161" });
 			this->UDPPortListBox->Location = System::Drawing::Point(265, 248);
 			this->UDPPortListBox->Name = L"UDPPortListBox";
 			this->UDPPortListBox->Size = System::Drawing::Size(120, 88);
@@ -872,7 +872,13 @@ private:System::Void InitializeParameter() {
 	//部分功能函数
 private:
 	System::Void ScanTCPorUDP(Object^ sender, DoWorkEventArgs^ e){
-		int size = IPAddrMap.size() * (TCPPortMap.size() + UDPPortMap.size());
+		int size = 0;
+		if (TCPScanCheckBox->Checked && UDPScanCheckBox->Checked)
+			size = IPAddrMap.size() * (TCPPortMap.size() + UDPPortMap.size());
+		else if (TCPScanCheckBox->Checked && !UDPScanCheckBox->Checked)
+			size = IPAddrMap.size() * TCPPortMap.size();
+		else if (!TCPScanCheckBox->Checked && UDPScanCheckBox->Checked)
+			size = IPAddrMap.size() * UDPPortMap.size();
 		int progressValue=0;
 		//每个IP地址扫描一次
 		for (auto item_addr = IPAddrMap.begin(); item_addr != IPAddrMap.end(); ++item_addr){
@@ -943,7 +949,7 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				 multimap<string, int>::const_iterator item2 = OpenPortMap.cbegin();
 				 while (item2 != OpenPortMap.cend()) {
 					 if (item2->first == item1->first)
-						 this->Result1->Text += "\t" + item2->second + "\n";
+						 this->Result1->Text += "\t" + item2->second + "  " + gcnew String(GetServerNameByPort(item2->second).c_str()) + "\n";
 					 ++item2;
 				 }
 			 }

@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Scanner1", "Scanner1\Scanner1.vcxproj", "{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UIDemo1", "UIDemo1\UIDemo1.vcxproj", "{9B569388-A1A3-4D7E-A578-715651902DB8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -17,10 +15,6 @@ Global
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.Debug|Win32.Build.0 = Debug|Win32
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.Release|Win32.ActiveCfg = Release|Win32
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.Release|Win32.Build.0 = Release|Win32
-		{9B569388-A1A3-4D7E-A578-715651902DB8}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9B569388-A1A3-4D7E-A578-715651902DB8}.Debug|Win32.Build.0 = Debug|Win32
-		{9B569388-A1A3-4D7E-A578-715651902DB8}.Release|Win32.ActiveCfg = Release|Win32
-		{9B569388-A1A3-4D7E-A578-715651902DB8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
