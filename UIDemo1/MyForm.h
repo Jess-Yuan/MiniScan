@@ -129,7 +129,7 @@ namespace UIDemo1 {
 		}
 #pragma endregion
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
-		if (ping("192.168.199.12") == 0)
+		if (ping("192.168.199.115") == 0)
 			this->textBox1->Text = "YES";
 		else
 			this->textBox1->Text = "NO";

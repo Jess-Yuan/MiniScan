@@ -3,10 +3,13 @@
 #include "Convert.h"
 #include "Auxiliary.h"
 #include "ConnectToHost.h"
+#include "icmp_ping\ping.h"
 #include <string>
 #include <map>
+
 #using <System.Drawing.dll>
 #using <System.dll>
+#using <System.Windows.Forms.dll>
 
 
 namespace Scanner1 {
@@ -43,9 +46,6 @@ namespace Scanner1 {
 			//
 			//TODO:  在此处添加构造函数代码
 			//
-
-			//初始化Worker
-			InitializeBackgoundWorker();
 
 			InitializeParameter();
 
@@ -109,13 +109,10 @@ namespace Scanner1 {
 	private: System::Windows::Forms::Button^  AddIPAddress;
 	private: System::Windows::Forms::TextBox^  IPAddressTextBox;
 
-			 
-			 //声明BackgoundWorker
-			 System::ComponentModel::BackgroundWorker^ backgroundWorker;
 
-
-
-
+	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
+	private: System::Windows::Forms::ProgressBar^  progressBar1;
+	private: System::Windows::Forms::Label^  ProgressLabel;
 
 
 	private:
@@ -134,6 +131,7 @@ namespace Scanner1 {
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->Scan = (gcnew System::Windows::Forms::TabPage());
 			this->ScanResult = (gcnew System::Windows::Forms::GroupBox());
+			this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
 			this->Result1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->StopButton = (gcnew System::Windows::Forms::Button());
 			this->StartButton = (gcnew System::Windows::Forms::Button());
@@ -167,6 +165,8 @@ namespace Scanner1 {
 			this->UDPScanCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->TCPScanCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->HostCheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->ProgressLabel = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->Scan->SuspendLayout();
 			this->ScanResult->SuspendLayout();
@@ -178,10 +178,10 @@ namespace Scanner1 {
 			// 
 			this->tabControl1->Controls->Add(this->Scan);
 			this->tabControl1->Controls->Add(this->ScanSetting);
-			this->tabControl1->Location = System::Drawing::Point(12, 15);
+			this->tabControl1->Location = System::Drawing::Point(12, 12);
 			this->tabControl1->Name = L"tabControl1";
 			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(581, 392);
+			this->tabControl1->Size = System::Drawing::Size(538, 395);
 			this->tabControl1->TabIndex = 0;
 			// 
 			// Scan
@@ -191,22 +191,31 @@ namespace Scanner1 {
 			this->Scan->Location = System::Drawing::Point(4, 22);
 			this->Scan->Name = L"Scan";
 			this->Scan->Padding = System::Windows::Forms::Padding(3);
-			this->Scan->Size = System::Drawing::Size(573, 366);
+			this->Scan->Size = System::Drawing::Size(530, 369);
 			this->Scan->TabIndex = 0;
 			this->Scan->Text = L"扫描";
 			this->Scan->UseVisualStyleBackColor = true;
 			// 
 			// ScanResult
 			// 
+			this->ScanResult->Controls->Add(this->ProgressLabel);
+			this->ScanResult->Controls->Add(this->progressBar1);
 			this->ScanResult->Controls->Add(this->Result1);
 			this->ScanResult->Controls->Add(this->StopButton);
 			this->ScanResult->Controls->Add(this->StartButton);
 			this->ScanResult->Location = System::Drawing::Point(58, 176);
 			this->ScanResult->Name = L"ScanResult";
-			this->ScanResult->Size = System::Drawing::Size(489, 184);
+			this->ScanResult->Size = System::Drawing::Size(461, 184);
 			this->ScanResult->TabIndex = 1;
 			this->ScanResult->TabStop = false;
 			this->ScanResult->Text = L"扫描结果";
+			// 
+			// progressBar1
+			// 
+			this->progressBar1->Location = System::Drawing::Point(271, 167);
+			this->progressBar1->Name = L"progressBar1";
+			this->progressBar1->Size = System::Drawing::Size(173, 12);
+			this->progressBar1->TabIndex = 3;
 			// 
 			// Result1
 			// 
@@ -249,7 +258,7 @@ namespace Scanner1 {
 			this->IPAddress->Controls->Add(this->IPAddressLabel);
 			this->IPAddress->Location = System::Drawing::Point(58, 6);
 			this->IPAddress->Name = L"IPAddress";
-			this->IPAddress->Size = System::Drawing::Size(489, 153);
+			this->IPAddress->Size = System::Drawing::Size(461, 153);
 			this->IPAddress->TabIndex = 0;
 			this->IPAddress->TabStop = false;
 			this->IPAddress->Text = L"IP地址";
@@ -355,7 +364,7 @@ namespace Scanner1 {
 			this->ScanSetting->Location = System::Drawing::Point(4, 22);
 			this->ScanSetting->Name = L"ScanSetting";
 			this->ScanSetting->Padding = System::Windows::Forms::Padding(3);
-			this->ScanSetting->Size = System::Drawing::Size(573, 366);
+			this->ScanSetting->Size = System::Drawing::Size(530, 369);
 			this->ScanSetting->TabIndex = 1;
 			this->ScanSetting->Text = L"扫描参数设置";
 			this->ScanSetting->UseVisualStyleBackColor = true;
@@ -536,10 +545,29 @@ namespace Scanner1 {
 			this->HostCheckBox->Text = L"扫描存活主机（局域网）";
 			this->HostCheckBox->UseVisualStyleBackColor = true;
 			// 
+			// backgroundWorker1
+			// 
+			this->backgroundWorker1->WorkerReportsProgress = true;
+			this->backgroundWorker1->WorkerSupportsCancellation = true;
+			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Scanner::backgroundWorker1_DoWork);
+			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Scanner::backgroundWorker1_ProgressChanged);
+			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::backgroundWorker1_DoCompleted);
+			// 
+			// ProgressLabel
+			// 
+			this->ProgressLabel->AutoSize = true;
+			this->ProgressLabel->Font = (gcnew System::Drawing::Font(L"宋体", 8));
+			this->ProgressLabel->Location = System::Drawing::Point(230, 167);
+			this->ProgressLabel->Name = L"ProgressLabel";
+			this->ProgressLabel->Size = System::Drawing::Size(49, 11);
+			this->ProgressLabel->TabIndex = 4;
+			this->ProgressLabel->Text = L"进度条：";
+			// 
 			// Scanner
 			// 
-			this->ClientSize = System::Drawing::Size(595, 411);
+			this->ClientSize = System::Drawing::Size(552, 411);
 			this->Controls->Add(this->tabControl1);
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
 			this->Name = L"Scanner";
 			this->ShowIcon = false;
 			this->Text = L"MiniScan";
@@ -547,6 +575,7 @@ namespace Scanner1 {
 			this->tabControl1->ResumeLayout(false);
 			this->Scan->ResumeLayout(false);
 			this->ScanResult->ResumeLayout(false);
+			this->ScanResult->PerformLayout();
 			this->IPAddress->ResumeLayout(false);
 			this->IPAddress->PerformLayout();
 			this->ScanSetting->ResumeLayout(false);
@@ -562,20 +591,18 @@ namespace Scanner1 {
 //开始扫描处理函数
 	private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		// 清空IP和端口对应的映射变量
-		//OpenPortMap.clear();
+		OpenPortMap.clear();
+		this->progressBar1->Value = 0;
 		this->Result1->Text = String::Empty;
-		//this->Result1->Text = "扫描中,请稍候...\n";
-		//this->StartButton->Enabled = false;
-		//this->StopButton->Enabled = true;
-		//backgroundWorker->RunWorkerAsync(1);
-		for (auto item = IPAddrMap.begin(); item != IPAddrMap.end(); ++item)
-			this->Result1->Text += gcnew String(item->second.c_str()) + "\n";
-
+		this->Result1->Text = "扫描中,请稍候...\n";
+		this->StartButton->Enabled = false;
+		this->StopButton->Enabled = true;
+		backgroundWorker1->RunWorkerAsync(1);
 	}
 
 		 //停止按钮处理函数
 private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	this->backgroundWorker->CancelAsync();
+	this->backgroundWorker1->CancelAsync();
 }
 
 //添加TCP端口的点击按钮函数
@@ -596,7 +623,6 @@ private: System::Void AddTCPPort_Click(System::Object^  sender, System::EventArg
 		return;
 	if (eport <= sport && (TCPPortMap[sport] != sport)) {
 		TCPPortMap[sport] = sport;
-		//TCPPortVec[sport] = sport;
 		this->TCPPortListBox->Items->Add(tmp1);
 	}
 
@@ -604,13 +630,14 @@ private: System::Void AddTCPPort_Click(System::Object^  sender, System::EventArg
 	if (sport < eport) {
 		int tmp_port = sport;
 		while (tmp_port <= eport) {
-			//TCPPortVec[tmp_port] = tmp_port;
 			TCPPortMap[tmp_port] = tmp_port;
 			++tmp_port;
 		}
 		this->TCPPortListBox->Items->Add(Convert::ToString(sport + "-" + eport));
 	}
 	
+	this->TCPStartPortTextBox->Text = String::Empty;
+	this->TCPEndPortTextBox->Text = String::Empty;
 }	
 
 //删除TCP端口的点击按钮函数
@@ -670,6 +697,8 @@ private: System::Void AddUDPPort_Click(System::Object^  sender, System::EventArg
 		this->UDPPortListBox->Items->Add(Convert::ToString(sport + "-" + eport));
 	}
 
+	this->UDPStartPortTextBox->Text = String::Empty;
+	this->UDPEndPortTextBox->Text = String::Empty;
 
 }
 		 //删除UDP端口处理函数
@@ -719,15 +748,16 @@ private: System::Void AddIPAddress_Click(System::Object^  sender, System::EventA
 		this->IPAddressListBox->Items->Add(this->IPAddressTextBox->Text);
 		IPAddrMap.insert({ str_ipaddr, str_ipaddr });
 	}
-	else
-		return;
+	
 	if (this->StartIPAddressTextBox->Text->Length >= 7 && this->EndIPAddressTextBox->Text->Length >=7) {
 		MarshalString(this->StartIPAddressTextBox->Text, start_ipaddr);
 		MarshalString(this->EndIPAddressTextBox->Text, end_ipaddr);
 		GenerateAddressRange(IPAddrMap, start_ipaddr, end_ipaddr);
 		this->IPAddressListBox->Items->Add(this->StartIPAddressTextBox->Text + "-" + this->EndIPAddressTextBox->Text);
 	}
-	
+	this->IPAddressTextBox->Text = String::Empty;
+	this->StartIPAddressTextBox->Text = String::Empty;
+	this->EndIPAddressTextBox->Text = String::Empty;
 }
 		 
 		 //删除IP地址
@@ -748,49 +778,8 @@ private: System::Void RemoveIPAddress_Click(System::Object^  sender, System::Eve
 	}
 }
 
-		 
-		 //BackgroundWoker DoWork
-		System::Void DoWork(Object^ sender, DoWorkEventArgs^ e) {
-
-			ScanTCPorUDP(sender, e);
-			
-		}
-
-		//BackgroundWoker Completed
-		 System::Void OnRunWorkerCompleted(Object^ sender, RunWorkerCompletedEventArgs^ e) {
-			 
-			 //格式输出
-			 for (auto item1 = IPAddrMap.begin(); item1 != IPAddrMap.end(); ++item1){
-				 this->Result1->Text += "--------------------------\n";
-				 this->Result1->Text += gcnew String(item1->first.c_str()) + " 开放端口有：\n";
-				 multimap<string, int>::const_iterator item2 = OpenPortMap.cbegin();
-				 while (item2 != OpenPortMap.cend()) {
-					 if (item2->first == item1->first)
-						 this->Result1->Text += "\t" + item2->second + "\n";
-					 ++item2;
-				 }
-			 }
-
-			 if (e->Cancelled)
-				 this->Result1->Text += "暂停扫描\n";
-			 else 
-				this->Result1->Text += "扫描完成\n";
-			 this->StartButton->Enabled = true;
-			 this->StopButton->Enabled = false;
-		 }
-
-		 
-private:
-	// 初始化BackgroundWorker函数
-	System::Void InitializeBackgoundWorker() {
-		backgroundWorker = gcnew System::ComponentModel::BackgroundWorker;
-		backgroundWorker->WorkerSupportsCancellation = true;
-		backgroundWorker->DoWork += gcnew DoWorkEventHandler(this, &Scanner::DoWork);
-		backgroundWorker->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::OnRunWorkerCompleted);
-	}
-	
-	//初始化某些变量，比如端口容器
-	System::Void InitializeParameter() {
+		 //初始化某些变量，比如端口容器
+private:System::Void InitializeParameter() {
 
 		//初始值TCP端口的容器
 		for each (String^ itemValue in TCPPortListBox->Items)
@@ -810,15 +799,18 @@ private:
 
 	}
 
-	//功能函数部分
+	//部分功能函数
 private:
 	System::Void ScanTCPorUDP(Object^ sender, DoWorkEventArgs^ e){
+		int size = IPAddrMap.size() * (TCPPortMap.size() + UDPPortMap.size());
+		int progressValue=0;
 		//每个IP地址扫描一次
 		for (auto item_addr = IPAddrMap.begin(); item_addr != IPAddrMap.end(); ++item_addr){
 			//检查是否TCP扫描
 			if (TCPScanCheckBox->Checked){
 				for (auto item = TCPPortMap.begin(); item != TCPPortMap.end(); ++item) {
-					if (!backgroundWorker->CancellationPending) {
+					++progressValue;
+					if (!backgroundWorker1->CancellationPending) {
 						if (ConnectToHostTCP(item->second, item_addr->second.c_str()))
 							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
 						CloseConnection();
@@ -828,12 +820,15 @@ private:
 						e->Cancel = true;
 						return;
 					}
+					int pregressPercent = (float)progressValue / (float)size * 100;
+					this->backgroundWorker1->ReportProgress(pregressPercent);
 				}
 			}
 			//检查是否UDP扫描
 			if (UDPScanCheckBox->Checked) {
 				for (auto item = UDPPortMap.begin(); item != UDPPortMap.end(); ++item) {
-					if (!backgroundWorker->CancellationPending) {
+					++progressValue;
+					if (!backgroundWorker1->CancellationPending) {
 						if (ConnectToHostUDP(item->second, item_addr->second.c_str()))
 							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
 						CloseConnection();
@@ -843,11 +838,40 @@ private:
 						e->Cancel = true;
 						return;
 					}
+					int pregressPercent = (float)progressValue / (float)size * 100;
+					this->backgroundWorker1->ReportProgress(pregressPercent);
 				}
 			}
 		}
 	}
 
 
+private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^ e) {
+	ScanTCPorUDP(sender, e);
+}
+		 System::Void backgroundWorker1_DoCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e) {
+
+			 //格式输出
+			 for (auto item1 = IPAddrMap.begin(); item1 != IPAddrMap.end(); ++item1){
+				 this->Result1->Text += "--------------------------\n";
+				 this->Result1->Text += gcnew String(item1->first.c_str()) + " 开放端口有：\n";
+				 multimap<string, int>::const_iterator item2 = OpenPortMap.cbegin();
+				 while (item2 != OpenPortMap.cend()) {
+					 if (item2->first == item1->first)
+						 this->Result1->Text += "\t" + item2->second + "\n";
+					 ++item2;
+				 }
+			 }
+
+			 if (e->Cancelled)
+				 this->Result1->Text += "暂停扫描\n";
+			 else
+				 this->Result1->Text += "扫描完成\n";
+			 this->StartButton->Enabled = true;
+			 this->StopButton->Enabled = false;
+		 }
+		 System::Void backgroundWorker1_ProgressChanged(System::Object ^sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
+			 this->progressBar1->Value = e->ProgressPercentage;
+		 }
 };
 }
