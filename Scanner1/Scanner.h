@@ -11,6 +11,7 @@
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 
+
 namespace Scanner1 {
 
 	using namespace System;
@@ -305,7 +306,7 @@ namespace Scanner1 {
 			// 
 			// RemoveIPAddress
 			// 
-			this->RemoveIPAddress->Location = System::Drawing::Point(214, 90);
+			this->RemoveIPAddress->Location = System::Drawing::Point(214, 69);
 			this->RemoveIPAddress->Name = L"RemoveIPAddress";
 			this->RemoveIPAddress->Size = System::Drawing::Size(40, 30);
 			this->RemoveIPAddress->TabIndex = 7;
@@ -315,7 +316,7 @@ namespace Scanner1 {
 			// 
 			// AddIPAddress
 			// 
-			this->AddIPAddress->Location = System::Drawing::Point(214, 51);
+			this->AddIPAddress->Location = System::Drawing::Point(214, 26);
 			this->AddIPAddress->Name = L"AddIPAddress";
 			this->AddIPAddress->Size = System::Drawing::Size(40, 30);
 			this->AddIPAddress->TabIndex = 6;
@@ -962,8 +963,8 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				 this->Result1->Text += "É¨ÃèÍê³É\n";
 			 }
 			 if ((this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 100) || 
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) 
-				 ) {
+				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) ||
+				 (this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 0)) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
 			 }
@@ -1000,7 +1001,8 @@ private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::Com
 			 OnlineIpAddrMap.clear();
 			 ScanIPAddrMap.clear();
 			 if ((this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 0) ||
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
+				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) ||
+				 (this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 0)) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
 			 }
