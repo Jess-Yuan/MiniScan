@@ -962,8 +962,8 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				 this->Result1->Text += "É¨ÃèÍê³É\n";
 			 }
 			 if ((this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 100) || 
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) ||
-				 (this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 0)) {
+				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) 
+				 ) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
 			 }
@@ -1000,8 +1000,7 @@ private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::Com
 			 OnlineIpAddrMap.clear();
 			 ScanIPAddrMap.clear();
 			 if ((this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 0) ||
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100) ||
-				 (this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 0)) {
+				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
 			 }
