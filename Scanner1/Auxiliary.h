@@ -142,6 +142,7 @@ void RemoveAddressRange(map<string, string> &mapAddr, string start_addr, string 
 
 }
 
+//暂时不能用
 void GenerateAddressRangeFromNetwork(map<string, string> &mapAddr, string net_addr, string net_mask) {
 
 	u_long bcast = inet_addr(net_addr.c_str()) | (~inet_addr(net_mask.c_str()));

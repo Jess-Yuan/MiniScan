@@ -11,7 +11,6 @@
 #using <System.dll>
 #using <System.Windows.Forms.dll>
 
-
 namespace Scanner1 {
 
 	using namespace System;
@@ -306,7 +305,7 @@ namespace Scanner1 {
 			// 
 			// RemoveIPAddress
 			// 
-			this->RemoveIPAddress->Location = System::Drawing::Point(214, 69);
+			this->RemoveIPAddress->Location = System::Drawing::Point(214, 90);
 			this->RemoveIPAddress->Name = L"RemoveIPAddress";
 			this->RemoveIPAddress->Size = System::Drawing::Size(40, 30);
 			this->RemoveIPAddress->TabIndex = 7;
@@ -316,7 +315,7 @@ namespace Scanner1 {
 			// 
 			// AddIPAddress
 			// 
-			this->AddIPAddress->Location = System::Drawing::Point(214, 26);
+			this->AddIPAddress->Location = System::Drawing::Point(214, 51);
 			this->AddIPAddress->Name = L"AddIPAddress";
 			this->AddIPAddress->Size = System::Drawing::Size(40, 30);
 			this->AddIPAddress->TabIndex = 6;
