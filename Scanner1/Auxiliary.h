@@ -225,6 +225,7 @@ string GetServerNameByPort(int port) {
 	case 23: name = "Telnet"; break;
 	case 25: name = "SMTP"; break;
 	case 80: name = "HTTP"; break;
+	case 53: name = "DNS"; break;
 	case 110: name = "POP3"; break;
 	case 115: name = "SFTP"; break;
 	case 123: name = "NTP"; break;

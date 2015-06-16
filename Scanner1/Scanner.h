@@ -672,6 +672,7 @@ namespace Scanner1 {
 		 //停止按钮处理函数
 private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
 	this->backgroundWorker1->CancelAsync();
+	this->backgroundWorker1->CancellationPending;
 	this->ScanHostWorker->CancelAsync();
 	this->StopButton->Enabled = false;
 	this->StartButton->Enabled = true;
@@ -890,9 +891,9 @@ private:
 						if (ConnectToHostTCP(item->second, item_addr->second.c_str()))
 							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
 						CloseConnection();
-
 					}
 					else {
+						CloseConnection();
 						e->Cancel = true;
 						return;
 					}
