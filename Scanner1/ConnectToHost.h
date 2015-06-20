@@ -70,7 +70,7 @@ bool ConnectToHostUDP(int PortNo, const char* IPAddress)
 	target.sin_port = htons(PortNo); //Port to connect on
 	target.sin_addr.S_un.S_addr = inet_addr(IPAddress); //Target IP
 
-	s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); //Create socket
+	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Create socket
 	if (s == INVALID_SOCKET)
 	{
 		return false; //Couldn't create the socket
