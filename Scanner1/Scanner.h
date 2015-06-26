@@ -119,10 +119,16 @@ namespace Scanner1 {
 	private: System::Windows::Forms::RichTextBox^  OnlineHostResult;
 
 	private: System::ComponentModel::BackgroundWorker^  ScanHostWorker;
-	private: System::Windows::Forms::TextBox^  NetMask;
-	private: System::Windows::Forms::Label^  SlashLabel;
-	private: System::Windows::Forms::TextBox^  NetWorkAddress;
+
+
+
 	private: System::Windows::Forms::ProgressBar^  ScanHostProgressBar;
+	private: System::Windows::Forms::TextBox^  NetMask;
+
+	private: System::Windows::Forms::TextBox^  NetWorkAddress;
+	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  SlashLabel;
+
 
 
 
@@ -159,9 +165,6 @@ namespace Scanner1 {
 			this->StartIPAddresslabel = (gcnew System::Windows::Forms::Label());
 			this->IPAddressLabel = (gcnew System::Windows::Forms::Label());
 			this->ScanSetting = (gcnew System::Windows::Forms::TabPage());
-			this->NetMask = (gcnew System::Windows::Forms::TextBox());
-			this->SlashLabel = (gcnew System::Windows::Forms::Label());
-			this->NetWorkAddress = (gcnew System::Windows::Forms::TextBox());
 			this->UDPEndPortTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->UDPStartPortTextBox = (gcnew System::Windows::Forms::TextBox());
 			this->UDPEndPortLabel = (gcnew System::Windows::Forms::Label());
@@ -183,6 +186,10 @@ namespace Scanner1 {
 			this->HostCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
 			this->ScanHostWorker = (gcnew System::ComponentModel::BackgroundWorker());
+			this->NetWorkAddress = (gcnew System::Windows::Forms::TextBox());
+			this->NetMask = (gcnew System::Windows::Forms::TextBox());
+			this->SlashLabel = (gcnew System::Windows::Forms::Label());
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->tabControl1->SuspendLayout();
 			this->Scan->SuspendLayout();
 			this->ScanResult->SuspendLayout();
@@ -279,6 +286,10 @@ namespace Scanner1 {
 			// 
 			// IPAddress
 			// 
+			this->IPAddress->Controls->Add(this->label1);
+			this->IPAddress->Controls->Add(this->SlashLabel);
+			this->IPAddress->Controls->Add(this->NetMask);
+			this->IPAddress->Controls->Add(this->NetWorkAddress);
 			this->IPAddress->Controls->Add(this->IPAddressListBox);
 			this->IPAddress->Controls->Add(this->RemoveIPAddress);
 			this->IPAddress->Controls->Add(this->AddIPAddress);
@@ -290,7 +301,7 @@ namespace Scanner1 {
 			this->IPAddress->Controls->Add(this->IPAddressLabel);
 			this->IPAddress->Location = System::Drawing::Point(6, 6);
 			this->IPAddress->Name = L"IPAddress";
-			this->IPAddress->Size = System::Drawing::Size(461, 153);
+			this->IPAddress->Size = System::Drawing::Size(461, 164);
 			this->IPAddress->TabIndex = 0;
 			this->IPAddress->TabStop = false;
 			this->IPAddress->Text = L"IP地址";
@@ -301,7 +312,7 @@ namespace Scanner1 {
 			this->IPAddressListBox->ItemHeight = 12;
 			this->IPAddressListBox->Location = System::Drawing::Point(271, 20);
 			this->IPAddressListBox->Name = L"IPAddressListBox";
-			this->IPAddressListBox->Size = System::Drawing::Size(173, 124);
+			this->IPAddressListBox->Size = System::Drawing::Size(173, 100);
 			this->IPAddressListBox->TabIndex = 8;
 			// 
 			// RemoveIPAddress
@@ -326,7 +337,7 @@ namespace Scanner1 {
 			// 
 			// EndIPAddressTextBox
 			// 
-			this->EndIPAddressTextBox->Location = System::Drawing::Point(99, 99);
+			this->EndIPAddressTextBox->Location = System::Drawing::Point(99, 93);
 			this->EndIPAddressTextBox->Name = L"EndIPAddressTextBox";
 			this->EndIPAddressTextBox->Size = System::Drawing::Size(100, 21);
 			this->EndIPAddressTextBox->TabIndex = 5;
@@ -348,7 +359,7 @@ namespace Scanner1 {
 			// EndIPAddresslabel
 			// 
 			this->EndIPAddresslabel->AutoSize = true;
-			this->EndIPAddresslabel->Location = System::Drawing::Point(20, 102);
+			this->EndIPAddresslabel->Location = System::Drawing::Point(20, 96);
 			this->EndIPAddresslabel->Name = L"EndIPAddresslabel";
 			this->EndIPAddresslabel->Size = System::Drawing::Size(77, 12);
 			this->EndIPAddresslabel->TabIndex = 2;
@@ -357,7 +368,7 @@ namespace Scanner1 {
 			// StartIPAddresslabel
 			// 
 			this->StartIPAddresslabel->AutoSize = true;
-			this->StartIPAddresslabel->Location = System::Drawing::Point(20, 69);
+			this->StartIPAddresslabel->Location = System::Drawing::Point(16, 69);
 			this->StartIPAddresslabel->Name = L"StartIPAddresslabel";
 			this->StartIPAddresslabel->Size = System::Drawing::Size(77, 12);
 			this->StartIPAddresslabel->TabIndex = 1;
@@ -374,9 +385,6 @@ namespace Scanner1 {
 			// 
 			// ScanSetting
 			// 
-			this->ScanSetting->Controls->Add(this->NetMask);
-			this->ScanSetting->Controls->Add(this->SlashLabel);
-			this->ScanSetting->Controls->Add(this->NetWorkAddress);
 			this->ScanSetting->Controls->Add(this->UDPEndPortTextBox);
 			this->ScanSetting->Controls->Add(this->UDPStartPortTextBox);
 			this->ScanSetting->Controls->Add(this->UDPEndPortLabel);
@@ -403,31 +411,6 @@ namespace Scanner1 {
 			this->ScanSetting->TabIndex = 1;
 			this->ScanSetting->Text = L"扫描参数设置";
 			this->ScanSetting->UseVisualStyleBackColor = true;
-			// 
-			// NetMask
-			// 
-			this->NetMask->Location = System::Drawing::Point(167, 57);
-			this->NetMask->Name = L"NetMask";
-			this->NetMask->Size = System::Drawing::Size(100, 21);
-			this->NetMask->TabIndex = 23;
-			// 
-			// SlashLabel
-			// 
-			this->SlashLabel->AutoSize = true;
-			this->SlashLabel->Font = (gcnew System::Drawing::Font(L"宋体", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(134)));
-			this->SlashLabel->Location = System::Drawing::Point(150, 60);
-			this->SlashLabel->Name = L"SlashLabel";
-			this->SlashLabel->Size = System::Drawing::Size(11, 12);
-			this->SlashLabel->TabIndex = 22;
-			this->SlashLabel->Text = L"/";
-			// 
-			// NetWorkAddress
-			// 
-			this->NetWorkAddress->Location = System::Drawing::Point(44, 57);
-			this->NetWorkAddress->Name = L"NetWorkAddress";
-			this->NetWorkAddress->Size = System::Drawing::Size(100, 21);
-			this->NetWorkAddress->TabIndex = 21;
 			// 
 			// UDPEndPortTextBox
 			// 
@@ -625,6 +608,38 @@ namespace Scanner1 {
 			this->ScanHostWorker->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Scanner::ScanHostWorker_DoWork);
 			this->ScanHostWorker->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Scanner::ScanHostWorker_ProgressChanged);
 			this->ScanHostWorker->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::ScanHostWorker_DoCompleted);
+			// 
+			// NetWorkAddress
+			// 
+			this->NetWorkAddress->Location = System::Drawing::Point(99, 126);
+			this->NetWorkAddress->Name = L"NetWorkAddress";
+			this->NetWorkAddress->Size = System::Drawing::Size(100, 21);
+			this->NetWorkAddress->TabIndex = 9;
+			// 
+			// NetMask
+			// 
+			this->NetMask->Location = System::Drawing::Point(219, 126);
+			this->NetMask->Name = L"NetMask";
+			this->NetMask->Size = System::Drawing::Size(100, 21);
+			this->NetMask->TabIndex = 10;
+			// 
+			// SlashLabel
+			// 
+			this->SlashLabel->AutoSize = true;
+			this->SlashLabel->Location = System::Drawing::Point(205, 129);
+			this->SlashLabel->Name = L"SlashLabel";
+			this->SlashLabel->Size = System::Drawing::Size(11, 12);
+			this->SlashLabel->TabIndex = 11;
+			this->SlashLabel->Text = L"/";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(8, 129);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(89, 12);
+			this->label1->TabIndex = 12;
+			this->label1->Text = L"网络地址范围：";
 			// 
 			// Scanner
 			// 
