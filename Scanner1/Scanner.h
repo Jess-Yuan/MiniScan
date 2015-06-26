@@ -128,6 +128,7 @@ namespace Scanner1 {
 	private: System::Windows::Forms::TextBox^  NetWorkAddress;
 	private: System::Windows::Forms::Label^  label1;
 	private: System::Windows::Forms::Label^  SlashLabel;
+	private: System::Windows::Forms::Button^  CancelButton;
 
 
 
@@ -190,6 +191,7 @@ namespace Scanner1 {
 			this->NetMask = (gcnew System::Windows::Forms::TextBox());
 			this->SlashLabel = (gcnew System::Windows::Forms::Label());
 			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->CancelButton = (gcnew System::Windows::Forms::Button());
 			this->tabControl1->SuspendLayout();
 			this->Scan->SuspendLayout();
 			this->ScanResult->SuspendLayout();
@@ -221,6 +223,7 @@ namespace Scanner1 {
 			// 
 			// ScanResult
 			// 
+			this->ScanResult->Controls->Add(this->CancelButton);
 			this->ScanResult->Controls->Add(this->ScanHostProgressBar);
 			this->ScanResult->Controls->Add(this->OnlineHostResult);
 			this->ScanResult->Controls->Add(this->progressBar1);
@@ -266,9 +269,9 @@ namespace Scanner1 {
 			// 
 			// StopButton
 			// 
-			this->StopButton->Location = System::Drawing::Point(244, 172);
+			this->StopButton->Location = System::Drawing::Point(220, 172);
 			this->StopButton->Name = L"StopButton";
-			this->StopButton->Size = System::Drawing::Size(75, 23);
+			this->StopButton->Size = System::Drawing::Size(48, 23);
 			this->StopButton->TabIndex = 1;
 			this->StopButton->Text = L"暂停";
 			this->StopButton->UseVisualStyleBackColor = true;
@@ -278,7 +281,7 @@ namespace Scanner1 {
 			// 
 			this->StartButton->Location = System::Drawing::Point(163, 172);
 			this->StartButton->Name = L"StartButton";
-			this->StartButton->Size = System::Drawing::Size(75, 23);
+			this->StartButton->Size = System::Drawing::Size(51, 23);
 			this->StartButton->TabIndex = 0;
 			this->StartButton->Text = L"开始";
 			this->StartButton->UseVisualStyleBackColor = true;
@@ -641,6 +644,15 @@ namespace Scanner1 {
 			this->label1->TabIndex = 12;
 			this->label1->Text = L"网络地址范围：";
 			// 
+			// CancelButton
+			// 
+			this->CancelButton->Location = System::Drawing::Point(274, 172);
+			this->CancelButton->Name = L"CancelButton";
+			this->CancelButton->Size = System::Drawing::Size(48, 23);
+			this->CancelButton->TabIndex = 7;
+			this->CancelButton->Text = L"停止";
+			this->CancelButton->UseVisualStyleBackColor = true;
+			// 
 			// Scanner
 			// 
 			this->ClientSize = System::Drawing::Size(514, 431);
@@ -686,11 +698,21 @@ namespace Scanner1 {
 
 		 //停止按钮处理函数
 private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	this->backgroundWorker1->CancelAsync();
-	this->backgroundWorker1->CancellationPending;
-	this->ScanHostWorker->CancelAsync();
-	this->StopButton->Enabled = false;
-	this->StartButton->Enabled = true;
+	//this->backgroundWorker1->CancelAsync();
+	//this->backgroundWorker1->CancellationPending;
+	//this->ScanHostWorker->CancelAsync();
+	//this->StopButton->Enabled = false;
+	//this->StartButton->Enabled = true;
+	if (this->StopButton->Text == "暂停") {
+		ScanHostMR->Reset();
+		ScanPortMR->Reset();
+		this->StopButton->Text = "继续";
+	}
+	else {
+		ScanHostMR->Set();
+		ScanPortMR->Set();
+		this->StopButton->Text = "暂停";
+	}
 }
 
 //添加TCP端口的点击按钮函数
@@ -887,6 +909,8 @@ private:System::Void InitializeParameter() {
 
 	//部分功能函数
 private:
+	ManualResetEvent^ ScanHostMR = gcnew ManualResetEvent(true);
+	ManualResetEvent^ ScanPortMR = gcnew ManualResetEvent(true);
 	System::Void ScanTCPorUDP(Object^ sender, DoWorkEventArgs^ e){
 		int size = 0;
 		if (TCPScanCheckBox->Checked && UDPScanCheckBox->Checked)
@@ -912,6 +936,7 @@ private:
 						e->Cancel = true;
 						return;
 					}
+					ScanPortMR->WaitOne();
 					int pregressPercent = (float)progressValue / (float)size * 100;
 					this->backgroundWorker1->ReportProgress(pregressPercent);
 				}
@@ -930,6 +955,7 @@ private:
 						e->Cancel = true;
 						return;
 					}
+					ScanPortMR->WaitOne();
 					int pregressPercent = (float)progressValue / (float)size * 100;
 					this->backgroundWorker1->ReportProgress(pregressPercent);
 				}
@@ -1003,6 +1029,7 @@ private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::Com
 			e->Cancel = true;
 			return;
 		}
+		ScanHostMR->WaitOne();
 		int precentComplete = float(progressValue) / float(sum) * 100;
 		this->ScanHostWorker->ReportProgress(precentComplete);
 	}
