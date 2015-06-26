@@ -233,10 +233,9 @@ string GetServerNameByPort(int port) {
 	case 138: name = "NetBios"; break;
 	case 143: name = "IMAP"; break;
 	case 161: name = "SNMP"; break;
-	case 443: name = "SSL"; break;
+	case 443: name = "HTTPS"; break;
 	case 546:
 	case 547: name = "DHCP"; break;
-	case 3306: name = "MySQL"; break;
 	case 3389:name = "Super Terminal"; break;
 	}
 	return name;
