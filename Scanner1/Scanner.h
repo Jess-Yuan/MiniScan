@@ -113,8 +113,8 @@ namespace Scanner1 {
 	private: System::Windows::Forms::TextBox^  IPAddressTextBox;
 
 
-	private: System::ComponentModel::BackgroundWorker^  backgroundWorker1;
-	private: System::Windows::Forms::ProgressBar^  progressBar1;
+	private: System::ComponentModel::BackgroundWorker^  ScanPortWorker;
+	private: System::Windows::Forms::ProgressBar^  ScanPortPprogressBar;
 
 	private: System::Windows::Forms::RichTextBox^  OnlineHostResult;
 
@@ -149,13 +149,18 @@ namespace Scanner1 {
 			this->tabControl1 = (gcnew System::Windows::Forms::TabControl());
 			this->Scan = (gcnew System::Windows::Forms::TabPage());
 			this->ScanResult = (gcnew System::Windows::Forms::GroupBox());
+			this->CancelButton = (gcnew System::Windows::Forms::Button());
 			this->ScanHostProgressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->OnlineHostResult = (gcnew System::Windows::Forms::RichTextBox());
-			this->progressBar1 = (gcnew System::Windows::Forms::ProgressBar());
+			this->ScanPortPprogressBar = (gcnew System::Windows::Forms::ProgressBar());
 			this->Result1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->StopButton = (gcnew System::Windows::Forms::Button());
 			this->StartButton = (gcnew System::Windows::Forms::Button());
 			this->IPAddress = (gcnew System::Windows::Forms::GroupBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->SlashLabel = (gcnew System::Windows::Forms::Label());
+			this->NetMask = (gcnew System::Windows::Forms::TextBox());
+			this->NetWorkAddress = (gcnew System::Windows::Forms::TextBox());
 			this->IPAddressListBox = (gcnew System::Windows::Forms::ListBox());
 			this->RemoveIPAddress = (gcnew System::Windows::Forms::Button());
 			this->AddIPAddress = (gcnew System::Windows::Forms::Button());
@@ -185,13 +190,8 @@ namespace Scanner1 {
 			this->UDPScanCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->TCPScanCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->HostCheckBox = (gcnew System::Windows::Forms::CheckBox());
-			this->backgroundWorker1 = (gcnew System::ComponentModel::BackgroundWorker());
+			this->ScanPortWorker = (gcnew System::ComponentModel::BackgroundWorker());
 			this->ScanHostWorker = (gcnew System::ComponentModel::BackgroundWorker());
-			this->NetWorkAddress = (gcnew System::Windows::Forms::TextBox());
-			this->NetMask = (gcnew System::Windows::Forms::TextBox());
-			this->SlashLabel = (gcnew System::Windows::Forms::Label());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->CancelButton = (gcnew System::Windows::Forms::Button());
 			this->tabControl1->SuspendLayout();
 			this->Scan->SuspendLayout();
 			this->ScanResult->SuspendLayout();
@@ -226,16 +226,26 @@ namespace Scanner1 {
 			this->ScanResult->Controls->Add(this->CancelButton);
 			this->ScanResult->Controls->Add(this->ScanHostProgressBar);
 			this->ScanResult->Controls->Add(this->OnlineHostResult);
-			this->ScanResult->Controls->Add(this->progressBar1);
+			this->ScanResult->Controls->Add(this->ScanPortPprogressBar);
 			this->ScanResult->Controls->Add(this->Result1);
 			this->ScanResult->Controls->Add(this->StopButton);
 			this->ScanResult->Controls->Add(this->StartButton);
-			this->ScanResult->Location = System::Drawing::Point(6, 176);
+			this->ScanResult->Location = System::Drawing::Point(6, 172);
 			this->ScanResult->Name = L"ScanResult";
-			this->ScanResult->Size = System::Drawing::Size(461, 204);
+			this->ScanResult->Size = System::Drawing::Size(461, 208);
 			this->ScanResult->TabIndex = 1;
 			this->ScanResult->TabStop = false;
 			this->ScanResult->Text = L"扫描结果";
+			// 
+			// CancelButton
+			// 
+			this->CancelButton->Location = System::Drawing::Point(274, 172);
+			this->CancelButton->Name = L"CancelButton";
+			this->CancelButton->Size = System::Drawing::Size(48, 23);
+			this->CancelButton->TabIndex = 7;
+			this->CancelButton->Text = L"停止";
+			this->CancelButton->UseVisualStyleBackColor = true;
+			this->CancelButton->Click += gcnew System::EventHandler(this, &Scanner::CancelButton_Click);
 			// 
 			// ScanHostProgressBar
 			// 
@@ -252,12 +262,12 @@ namespace Scanner1 {
 			this->OnlineHostResult->TabIndex = 5;
 			this->OnlineHostResult->Text = L"";
 			// 
-			// progressBar1
+			// ScanPortPprogressBar
 			// 
-			this->progressBar1->Location = System::Drawing::Point(37, 154);
-			this->progressBar1->Name = L"progressBar1";
-			this->progressBar1->Size = System::Drawing::Size(162, 12);
-			this->progressBar1->TabIndex = 3;
+			this->ScanPortPprogressBar->Location = System::Drawing::Point(37, 154);
+			this->ScanPortPprogressBar->Name = L"ScanPortPprogressBar";
+			this->ScanPortPprogressBar->Size = System::Drawing::Size(162, 12);
+			this->ScanPortPprogressBar->TabIndex = 3;
 			// 
 			// Result1
 			// 
@@ -304,10 +314,42 @@ namespace Scanner1 {
 			this->IPAddress->Controls->Add(this->IPAddressLabel);
 			this->IPAddress->Location = System::Drawing::Point(6, 6);
 			this->IPAddress->Name = L"IPAddress";
-			this->IPAddress->Size = System::Drawing::Size(461, 164);
+			this->IPAddress->Size = System::Drawing::Size(461, 160);
 			this->IPAddress->TabIndex = 0;
 			this->IPAddress->TabStop = false;
 			this->IPAddress->Text = L"IP地址";
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(8, 129);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(89, 12);
+			this->label1->TabIndex = 12;
+			this->label1->Text = L"网络地址范围：";
+			// 
+			// SlashLabel
+			// 
+			this->SlashLabel->AutoSize = true;
+			this->SlashLabel->Location = System::Drawing::Point(209, 129);
+			this->SlashLabel->Name = L"SlashLabel";
+			this->SlashLabel->Size = System::Drawing::Size(11, 12);
+			this->SlashLabel->TabIndex = 11;
+			this->SlashLabel->Text = L"/";
+			// 
+			// NetMask
+			// 
+			this->NetMask->Location = System::Drawing::Point(226, 126);
+			this->NetMask->Name = L"NetMask";
+			this->NetMask->Size = System::Drawing::Size(100, 21);
+			this->NetMask->TabIndex = 10;
+			// 
+			// NetWorkAddress
+			// 
+			this->NetWorkAddress->Location = System::Drawing::Point(103, 126);
+			this->NetWorkAddress->Name = L"NetWorkAddress";
+			this->NetWorkAddress->Size = System::Drawing::Size(100, 21);
+			this->NetWorkAddress->TabIndex = 9;
 			// 
 			// IPAddressListBox
 			// 
@@ -371,7 +413,7 @@ namespace Scanner1 {
 			// StartIPAddresslabel
 			// 
 			this->StartIPAddresslabel->AutoSize = true;
-			this->StartIPAddresslabel->Location = System::Drawing::Point(16, 69);
+			this->StartIPAddresslabel->Location = System::Drawing::Point(20, 69);
 			this->StartIPAddresslabel->Name = L"StartIPAddresslabel";
 			this->StartIPAddresslabel->Size = System::Drawing::Size(77, 12);
 			this->StartIPAddresslabel->TabIndex = 1;
@@ -596,13 +638,13 @@ namespace Scanner1 {
 			this->HostCheckBox->Text = L"扫描存活主机（局域网）";
 			this->HostCheckBox->UseVisualStyleBackColor = true;
 			// 
-			// backgroundWorker1
+			// ScanPortWorker
 			// 
-			this->backgroundWorker1->WorkerReportsProgress = true;
-			this->backgroundWorker1->WorkerSupportsCancellation = true;
-			this->backgroundWorker1->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Scanner::backgroundWorker1_DoWork);
-			this->backgroundWorker1->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Scanner::backgroundWorker1_ProgressChanged);
-			this->backgroundWorker1->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::backgroundWorker1_DoCompleted);
+			this->ScanPortWorker->WorkerReportsProgress = true;
+			this->ScanPortWorker->WorkerSupportsCancellation = true;
+			this->ScanPortWorker->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Scanner::ScanPortWorker_DoWork);
+			this->ScanPortWorker->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Scanner::ScanPortWorker_ProgressChanged);
+			this->ScanPortWorker->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::ScanPortWorker_DoCompleted);
 			// 
 			// ScanHostWorker
 			// 
@@ -611,47 +653,6 @@ namespace Scanner1 {
 			this->ScanHostWorker->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &Scanner::ScanHostWorker_DoWork);
 			this->ScanHostWorker->ProgressChanged += gcnew System::ComponentModel::ProgressChangedEventHandler(this, &Scanner::ScanHostWorker_ProgressChanged);
 			this->ScanHostWorker->RunWorkerCompleted += gcnew System::ComponentModel::RunWorkerCompletedEventHandler(this, &Scanner::ScanHostWorker_DoCompleted);
-			// 
-			// NetWorkAddress
-			// 
-			this->NetWorkAddress->Location = System::Drawing::Point(99, 126);
-			this->NetWorkAddress->Name = L"NetWorkAddress";
-			this->NetWorkAddress->Size = System::Drawing::Size(100, 21);
-			this->NetWorkAddress->TabIndex = 9;
-			// 
-			// NetMask
-			// 
-			this->NetMask->Location = System::Drawing::Point(219, 126);
-			this->NetMask->Name = L"NetMask";
-			this->NetMask->Size = System::Drawing::Size(100, 21);
-			this->NetMask->TabIndex = 10;
-			// 
-			// SlashLabel
-			// 
-			this->SlashLabel->AutoSize = true;
-			this->SlashLabel->Location = System::Drawing::Point(205, 129);
-			this->SlashLabel->Name = L"SlashLabel";
-			this->SlashLabel->Size = System::Drawing::Size(11, 12);
-			this->SlashLabel->TabIndex = 11;
-			this->SlashLabel->Text = L"/";
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(8, 129);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(89, 12);
-			this->label1->TabIndex = 12;
-			this->label1->Text = L"网络地址范围：";
-			// 
-			// CancelButton
-			// 
-			this->CancelButton->Location = System::Drawing::Point(274, 172);
-			this->CancelButton->Name = L"CancelButton";
-			this->CancelButton->Size = System::Drawing::Size(48, 23);
-			this->CancelButton->TabIndex = 7;
-			this->CancelButton->Text = L"停止";
-			this->CancelButton->UseVisualStyleBackColor = true;
 			// 
 			// Scanner
 			// 
@@ -681,7 +682,7 @@ namespace Scanner1 {
 	private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		// 清空IP和端口对应的映射变量
 		OpenPortMap.clear();
-		this->progressBar1->Value = 0;
+		this->ScanPortPprogressBar->Value = 0;
 		this->ScanHostProgressBar->Value = 0;
 		this->Result1->Text = String::Empty;
 		this->OnlineHostResult->Text = String::Empty;
@@ -689,17 +690,18 @@ namespace Scanner1 {
 		this->OnlineHostResult->Text = "存活主机数：";
 		this->StartButton->Enabled = false;
 		this->StopButton->Enabled = true;
+		this->CancelButton->Enabled = true;
+		HandleScanHostIPMap(sender, e);
 		if (this->HostCheckBox->Checked) {
-			HandleScanHostIPMap(sender,e);
 			ScanHostWorker->RunWorkerAsync(1);
 		}
-		backgroundWorker1->RunWorkerAsync(1);
+		ScanPortWorker->RunWorkerAsync(1);
 	}
 
 		 //停止按钮处理函数
 private: System::Void StopButton_Click(System::Object^  sender, System::EventArgs^  e) {
-	//this->backgroundWorker1->CancelAsync();
-	//this->backgroundWorker1->CancellationPending;
+	//this->ScanPortWorker->CancelAsync();
+	//this->ScanPortWorker->CancellationPending;
 	//this->ScanHostWorker->CancelAsync();
 	//this->StopButton->Enabled = false;
 	//this->StartButton->Enabled = true;
@@ -713,6 +715,13 @@ private: System::Void StopButton_Click(System::Object^  sender, System::EventArg
 		ScanPortMR->Set();
 		this->StopButton->Text = "暂停";
 	}
+}
+
+		 //取消按钮
+private: System::Void CancelButton_Click(System::Object^  sender, System::EventArgs^  e) {
+	this->ScanHostWorker->CancelAsync();
+	this->ScanPortWorker->CancelAsync();
+	this->StartButton->Enabled = true;
 }
 
 //添加TCP端口的点击按钮函数
@@ -926,7 +935,7 @@ private:
 			if (TCPScanCheckBox->Checked){
 				for (auto item = TCPPortMap.begin(); item != TCPPortMap.end(); ++item) {
 					++progressValue;
-					if (!backgroundWorker1->CancellationPending) {
+					if (!ScanPortWorker->CancellationPending) {
 						if (ConnectToHostTCP(item->second, item_addr->second.c_str()))
 							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
 						CloseConnection();
@@ -938,14 +947,14 @@ private:
 					}
 					ScanPortMR->WaitOne();
 					int pregressPercent = (float)progressValue / (float)size * 100;
-					this->backgroundWorker1->ReportProgress(pregressPercent);
+					this->ScanPortWorker->ReportProgress(pregressPercent);
 				}
 			}
 			//检查是否UDP扫描
 			if (UDPScanCheckBox->Checked) {
 				for (auto item = UDPPortMap.begin(); item != UDPPortMap.end(); ++item) {
 					++progressValue;
-					if (!backgroundWorker1->CancellationPending) {
+					if (!ScanPortWorker->CancellationPending) {
 						if (ConnectToHostUDP(item->second, item_addr->second.c_str()))
 							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
 						CloseConnection();
@@ -957,7 +966,7 @@ private:
 					}
 					ScanPortMR->WaitOne();
 					int pregressPercent = (float)progressValue / (float)size * 100;
-					this->backgroundWorker1->ReportProgress(pregressPercent);
+					this->ScanPortWorker->ReportProgress(pregressPercent);
 				}
 			}
 		}
@@ -979,10 +988,11 @@ private:
 		GenerateAddressRange(ScanIPAddrMap, net_addr, bcast_addr);
 	}
 
-private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^ e) {
+private: System::Void ScanPortWorker_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^ e) {
 	ScanTCPorUDP(sender, e);
 }
-		 System::Void backgroundWorker1_DoCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e) {
+
+		 System::Void ScanPortWorker_DoCompleted(System::Object^ sender, System::ComponentModel::RunWorkerCompletedEventArgs^ e) {
 
 			 //格式输出
 			 for (auto item1 = IPAddrMap.begin(); item1 != IPAddrMap.end(); ++item1){
@@ -1004,15 +1014,17 @@ private: System::Void backgroundWorker1_DoWork(System::Object^  sender, System::
 				 this->Result1->Text += "--------------------------\n";
 				 this->Result1->Text += "扫描完成\n";
 			 }
-			 if ((this->progressBar1->Value == 0 && this->ScanHostProgressBar->Value == 100) || 
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
+			 if ((this->ScanPortPprogressBar->Value == 0 && this->ScanHostProgressBar->Value == 100) || 
+				 (this->ScanPortPprogressBar->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
+				 this->CancelButton->Enabled = false;
 			 }
 			 OpenPortMap.clear();
 		 }
-		 System::Void backgroundWorker1_ProgressChanged(System::Object ^sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
-			 this->progressBar1->Value = e->ProgressPercentage;
+
+		 System::Void ScanPortWorker_ProgressChanged(System::Object ^sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
+			 this->ScanPortPprogressBar->Value = e->ProgressPercentage;
 		 }
 
 private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^  e) {
@@ -1042,15 +1054,17 @@ private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::Com
 			 this->OnlineHostResult->Text += "--------------------------\n";
 			 OnlineIpAddrMap.clear();
 			 ScanIPAddrMap.clear();
-			 if ((this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 0) ||
-				 (this->progressBar1->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
+			 if ((this->ScanPortPprogressBar->Value == 100 && this->ScanHostProgressBar->Value == 0) ||
+				 (this->ScanPortPprogressBar->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
 				 this->StartButton->Enabled = true;
 				 this->StopButton->Enabled = false;
+				 this->CancelButton->Enabled = false;
 			 }
 			 this->OnlineHostResult->Text += "完成\n";
 		 }
 		 System::Void ScanHostWorker_ProgressChanged(System::Object^ sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
 			 this->ScanHostProgressBar->Value = e->ProgressPercentage;
 		 }
+
 };
 }
