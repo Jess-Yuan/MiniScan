@@ -33,6 +33,8 @@ bool ConnectToHostTCP(int PortNo, const char* IPAddress)
 	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); //Create socket
 	if (s == INVALID_SOCKET)
 	{
+		closesocket(s);
+		WSACleanup();
 		return false; //Couldn't create the socket
 	}
 
@@ -40,10 +42,15 @@ bool ConnectToHostTCP(int PortNo, const char* IPAddress)
 
 	if (connect(s, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR)
 	{
+		closesocket(s);
+		WSACleanup();
 		return false; //Couldn't connect
 	}
-	else
+	else {
+		closesocket(s);
+		WSACleanup();
 		return true; //Success
+	}
 }
 
 //Connecto To Host with UDP protocol
@@ -70,9 +77,11 @@ bool ConnectToHostUDP(int PortNo, const char* IPAddress)
 	target.sin_port = htons(PortNo); //Port to connect on
 	target.sin_addr.S_un.S_addr = inet_addr(IPAddress); //Target IP
 
-	s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP); //Create socket
+	s = socket(AF_INET, SOCK_DGRAM, 0); //Create socket
 	if (s == INVALID_SOCKET)
 	{
+		closesocket(s);
+		WSACleanup();
 		return false; //Couldn't create the socket
 	}
 
@@ -80,13 +89,17 @@ bool ConnectToHostUDP(int PortNo, const char* IPAddress)
 
 	if (connect(s, (SOCKADDR *)&target, sizeof(target)) == SOCKET_ERROR)
 	{
+		closesocket(s);
+		WSACleanup();
 		return false; //Couldn't connect
 	}
-	else
+	else {
+		closesocket(s);
+		WSACleanup();
 		return true; //Success
+	}
 }
 
-//CLOSECONNECTION ¨C shuts down the socket and closes any connection on it
 void CloseConnection()
 {
 	//Close the socket if it exists

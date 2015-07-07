@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniScan", "Scanner1\Scanner1.vcxproj", "{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test", "Test\Test.vcxproj", "{B42686EF-BC95-4130-A330-B51D50ACB759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CD_ROM|Win32 = CD_ROM|Win32
@@ -24,6 +26,16 @@ Global
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.Release|Win32.Build.0 = Release|Win32
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.SingleImage|Win32.ActiveCfg = Release|Win32
 		{3086E3D2-4992-41A3-B11A-FF28C1D74D7C}.SingleImage|Win32.Build.0 = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.CD_ROM|Win32.ActiveCfg = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.CD_ROM|Win32.Build.0 = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.Debug|Win32.Build.0 = Debug|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.DVD-5|Win32.ActiveCfg = Debug|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.DVD-5|Win32.Build.0 = Debug|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.Release|Win32.ActiveCfg = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.Release|Win32.Build.0 = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.SingleImage|Win32.ActiveCfg = Release|Win32
+		{B42686EF-BC95-4130-A330-B51D50ACB759}.SingleImage|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

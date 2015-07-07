@@ -681,7 +681,7 @@ namespace Scanner1 {
 //开始扫描处理函数
 	private: System::Void StartButton_Click(System::Object^  sender, System::EventArgs^  e) {
 		// 清空IP和端口对应的映射变量
-		OpenPortMap.clear();
+		ClearParameter();
 		this->ScanPortPprogressBar->Value = 0;
 		this->ScanHostProgressBar->Value = 0;
 		this->Result1->Text = String::Empty;
@@ -691,11 +691,11 @@ namespace Scanner1 {
 		this->StartButton->Enabled = false;
 		this->StopButton->Enabled = true;
 		this->CancelButton->Enabled = true;
-		HandleScanHostIPMap(sender, e);
+		HandleHostIPMap(sender, e);
 		if (this->HostCheckBox->Checked) {
-			ScanHostWorker->RunWorkerAsync(1);
+			ScanHostWorker->RunWorkerAsync();
 		}
-		ScanPortWorker->RunWorkerAsync(1);
+		ScanPortWorker->RunWorkerAsync();
 	}
 
 		 //停止按钮处理函数
@@ -888,13 +888,18 @@ private: System::Void RemoveIPAddress_Click(System::Object^  sender, System::Eve
 	string ipAddr;
 	this->IPAddressListBox->Items->Remove(tmp_addr);
 	MarshalString(tmp_addr, ipAddr);
-	IPAddrMap.erase(ipAddr);
 
-	if (ipAddr.find("-") >0) {
+	if (ipAddr.find("-") >=0) {
 		string start_ipaddr = ipAddr.substr(0, ipAddr.find("-"));
 		string end_ipaddr = ipAddr.substr(ipAddr.find("-") + 1, ipAddr.length());
 		RemoveAddressRange(IPAddrMap, start_ipaddr, end_ipaddr);
 	}
+	else {
+		IPAddrMap.erase(ipAddr);
+	}
+	//for (auto item = IPAddrMap.cbegin(); item != IPAddrMap.cend(); ++item) {
+	//	this->Result1->Text += gcnew String(item->first.c_str());
+	//}
 }
 
 		 //初始化某些变量，比如端口容器
@@ -915,6 +920,11 @@ private:System::Void InitializeParameter() {
 		}
 
 	}
+		//清空一些变量
+		System::Void ClearParameter() {
+			OnlineIpAddrMap.clear();
+			OpenPortMap.clear();
+		}
 
 	//部分功能函数
 private:
@@ -936,8 +946,8 @@ private:
 				for (auto item = TCPPortMap.begin(); item != TCPPortMap.end(); ++item) {
 					++progressValue;
 					if (!ScanPortWorker->CancellationPending) {
-						if (ConnectToHostTCP(item->second, item_addr->second.c_str()))
-							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
+						if (ConnectToHostTCP(item->second, item_addr->first.c_str()))
+							OpenPortMap.insert({ item_addr->first, item->second });
 						CloseConnection();
 					}
 					else {
@@ -955,12 +965,12 @@ private:
 				for (auto item = UDPPortMap.begin(); item != UDPPortMap.end(); ++item) {
 					++progressValue;
 					if (!ScanPortWorker->CancellationPending) {
-						if (ConnectToHostUDP(item->second, item_addr->second.c_str()))
-							OpenPortMap.insert({ item_addr->second.c_str(), item->second });
+						if (ConnectToHostUDP(item->second, item_addr->first.c_str()))
+							OpenPortMap.insert({ item_addr->first, item->second });
 						CloseConnection();
-
 					}
 					else {
+						CloseConnection();
 						e->Cancel = true;
 						return;
 					}
@@ -971,7 +981,7 @@ private:
 			}
 		}
 	}
-	System::Void HandleScanHostIPMap(System::Object^ sender,System::EventArgs^  e) {
+	System::Void HandleHostIPMap(System::Object^ sender,System::EventArgs^  e) {
 		for (auto item = IPAddrMap.cbegin(); item != IPAddrMap.cend(); ++item) {
 			ScanIPAddrMap.insert({ item->second, item->second });
 		}
@@ -986,6 +996,7 @@ private:
 		addr.S_un.S_addr = bcast;
 		string bcast_addr = string(inet_ntoa(addr));
 		GenerateAddressRange(ScanIPAddrMap, net_addr, bcast_addr);
+		GenerateAddressRange(IPAddrMap, net_addr, bcast_addr);
 	}
 
 private: System::Void ScanPortWorker_DoWork(System::Object^  sender, System::ComponentModel::DoWorkEventArgs^ e) {
@@ -1020,7 +1031,7 @@ private: System::Void ScanPortWorker_DoWork(System::Object^  sender, System::Com
 				 this->StopButton->Enabled = false;
 				 this->CancelButton->Enabled = false;
 			 }
-			 OpenPortMap.clear();
+			 //OpenPortMap.clear();
 		 }
 
 		 System::Void ScanPortWorker_ProgressChanged(System::Object ^sender, System::ComponentModel::ProgressChangedEventArgs^ e) {
@@ -1052,8 +1063,8 @@ private: System::Void ScanHostWorker_DoWork(System::Object^  sender, System::Com
 				 this->OnlineHostResult->Text += "\t" + gcnew String(item->first.c_str()) + "\n";
 			 }
 			 this->OnlineHostResult->Text += "--------------------------\n";
-			 OnlineIpAddrMap.clear();
-			 ScanIPAddrMap.clear();
+			 //OnlineIpAddrMap.clear();
+			 //ScanIPAddrMap.clear();
 			 if ((this->ScanPortPprogressBar->Value == 100 && this->ScanHostProgressBar->Value == 0) ||
 				 (this->ScanPortPprogressBar->Value == 100 && this->ScanHostProgressBar->Value == 100)) {
 				 this->StartButton->Enabled = true;
